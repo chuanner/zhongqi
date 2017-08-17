@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/app.css" />
+		<style type="text/css">
+			#slider img {
+				height: 388px;
+			}
+			
+			.z_home_li {
+				text-align: center;
+				margin-bottom: 20px;
+			}
+			
+			.z_home_li>a img {
+				width: 60px !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav z_header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">新闻详情</h1>
+		</header>
+
+		<div class="mui-content mui-content-padded" style="background-color:#fff;">
+			<div id="bottomPopover" class="mui-popover mui-popover-bottom">
+				<div class="mui-popover-arrow"></div>
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view z_ul_btn">
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-hgz.html">合格证数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-coc.html">COC数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-yh.html">油耗数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-mp.html">铭牌数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-hb.html">环保数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-lbj.html">零部件数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-yzx.html">三证数据一致性对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-yzxjg.html">一致性对比结果</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+			<a class="openMenu_a" href="#popover" id="openPopover"></a>
+		</div>
+
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/jquery-3.1.1.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				var nid = self.nid;
+				var con = self.con;
+				console.log(con);
+				console.log(nid);
+				$('.mui-content').html(con);
+			})
+		</script>
+	</body>
+
+</html>

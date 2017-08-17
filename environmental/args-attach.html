@@ -1,0 +1,404 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/my.css" rel="stylesheet" />
+		<link href="../css/iconfont.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/icons-extra.css" />
+
+		<style>
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 45px;
+				height: auto;
+			}
+			
+			.mui-pull-top-tips {
+				position: absolute;
+				top: -20px;
+				left: 50%;
+				margin-left: -25px;
+				width: 40px;
+				height: 40px;
+				border-radius: 100%;
+				z-index: 1;
+			}
+			
+			.mui-bar~.mui-pull-top-tips {
+				top: 24px;
+			}
+			
+			.mui-pull-top-wrapper {
+				width: 42px;
+				height: 42px;
+				display: block;
+				text-align: center;
+				background-color: white;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+				box-shadow: 0 4px 10px #bbb;
+				overflow: hidden;
+			}
+			
+			.mui-pull-top-tips.mui-transitioning {
+				-webkit-transition-duration: 200ms;
+				transition-duration: 200ms;
+			}
+			
+			.mui-pull-top-tips .mui-pull-loading {
+				/*-webkit-backface-visibility: hidden;
+				-webkit-transition-duration: 400ms;
+				transition-duration: 400ms;*/
+				margin: 0;
+			}
+			
+			.mui-pull-top-wrapper .mui-icon,
+			.mui-pull-top-wrapper .mui-spinner {
+				margin-top: 7px;
+			}
+			
+			.mui-pull-top-wrapper .mui-icon.mui-reverse {
+				/*-webkit-transform: rotate(180deg) translateZ(0);*/
+			}
+			
+			.mui-pull-bottom-tips {
+				text-align: center;
+				background-color: white;
+				font-size: 15px;
+				line-height: 40px;
+				color: #777;
+			}
+			
+			.mui-pull-top-canvas {
+				overflow: hidden;
+				background-color: white;
+				border-radius: 40px;
+				box-shadow: 0 4px 10px #bbb;
+				width: 40px;
+				height: 40px;
+				margin: 0 auto;
+			}
+			
+			.mui-pull-top-canvas canvas {
+				width: 40px;
+			}
+			
+			.mui-slider-indicator.mui-segmented-control {
+				background-color: white;
+			}
+		</style>
+		<style type="text/css">
+			.wenzd {
+				font-size: 0.8em;
+				color: #555555;
+			}
+		</style>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div id="slider" class="mui-slider mui-fullscreen">
+				<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="height: 44px;background: #4092c4;">
+					<div class="mui-scroll" style="width: 100%;padding-top: 5px;font-size: 16px;">
+						<a class="mui-control-item mui-active" href="#item1mobile" style="width: 45%;">
+							公开参数
+						</a>
+						<a class="mui-control-item" href="#item2mobile" style="width: 45%;">
+							附表参数
+						</a>
+					</div>
+				</div>
+				<div class="mui-slider-group">
+					<div id="item1mobile" class="mui-slider-item mui-control-content">
+						<div id="scroll1" class="mui-scroll-wrapper">
+							<div id="1" class="mui-scroll mui-card">
+								<ul id="1" class="mui-table-view">
+									<li class="mui-table-view-cell" style="width: 100%;">
+										<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">序号</span>
+										<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">参数编号</span>
+										<!--<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">接口参数名</span>-->
+										<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">参数名称</span>-->
+										<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">企业参数编号</span>-->
+										<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">参数名</span>
+										<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">是否是多值</span>-->
+										<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">是否是单值</span>-->
+										<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">参数值</span>
+										<!--<span id="zwpp" style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">公告列表id</span>-->
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div id="item2mobile" class="mui-slider-item mui-control-content">
+						<div id="scroll2" class="mui-scroll-wrapper">
+							<div id="2" class="mui-scroll mui-card">
+								<ul id="2" class="mui-table-view">
+									<li class="mui-table-view-cell" style="width: 100%;">
+										<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">序号</span>
+										<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">参数编号</span>
+										<!--<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">接口参数名</span>-->
+										<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">参数名称</span>-->
+										<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">企业参数编号</span>-->
+										<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">参数名</span>
+										<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">是否是多值</span>-->
+										<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">是否是单值</span>-->
+										<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">参数值</span>
+										<!--<span id="zwpp" style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">公告列表id</span>-->
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/my.js"></script>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script src="../js/mui.pullToRefresh.material.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+				mui.init();
+				var webview = plus.webview.currentWebview();
+				var id = webview.id;
+
+				//阻尼系数
+				var deceleration = mui.os.ios ? 0.003 : 0.0009;
+				mui('.mui-scroll-wrapper').scroll({
+					bounce: false,
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration
+				});
+				// argspage attachpage用于记录 教育 和 培训 页数
+				var argspage = 1;
+				var	attachpage = 1;
+				mui.ready(function() {
+					mui.each(document.querySelectorAll('.mui-slider-group .mui-scroll'), function(index, pullRefreshEl) {
+						mui(pullRefreshEl).pullToRefresh({
+							down: {
+								callback: function() {
+									var self = this;
+									self.id = index;
+									setTimeout(function() {
+										if(index == '0') { // 教育
+											argspage = 1;
+										} else { // 培训
+											attachpage = 1;
+										}
+										getDownData(self);
+										self.endPullDownToRefresh();
+									}, 1000);
+								}
+							},
+							up: {
+								auto: true,
+								contentrefresh: "数据加载中...",
+								contentnomore: "没有更多数据了",
+								callback: function() {
+									var self = this;
+									self.id = index;
+									setTimeout(function() {
+										getUpData(self);
+										self.endPullUpToRefresh();
+									}, 1000);
+								}
+							}
+						});
+					});
+					//  最新 获取下拉数据
+					function getDownData(self) {
+						var url;
+						if(self.id == '0') {
+							// 教育
+							url = urlpath + '/a/BaseDataCheck/Environment/APPenvironmentform?id=' + id + '&pageNo=' + argspage + '&pageSize=' + pageSize;
+							//						url = urlpath + '/a/edu/eduCoursemanage/app_files?pageNo=' + argspage + '&pageSize=' + pageSize;
+							mui.getJSON(url, {}, function(data) {
+								var ul = self.element.querySelector('.mui-table-view');
+								var len = ul.childElementCount;
+								//下拉刷新前清空子ul节点
+								for(var i = ul.childNodes.length - 1; i >= 0; i--) {
+									ul.removeChild(ul.childNodes[i]);
+								}
+								if(data.rDate.length != '0') {
+									ul.insertBefore(createArgsFragment(ul, pageSize, data), ul.firstChild);
+								}
+								self.refresh(true);
+								mui.toast("刷新成功");
+								argspage = 2;
+							});
+						} else if(self.id == '1') {
+							url = urlpath + '/a/BaseDataCheck/Environment/APPenvironmentScheduleform?id=' + id + '&pageNo=' + attachpage + '&pageSize=' + pageSize;
+							mui.getJSON(url, {}, function(data) {
+								var ul = self.element.querySelector('.mui-table-view');
+								var len = ul.childElementCount;
+								//下拉刷新前清空子ul节点
+								for(var i = ul.childNodes.length - 1; i >= 0; i--) {
+									ul.removeChild(ul.childNodes[i]);
+								}
+								if(data.rDate.length != '0') {
+									ul.insertBefore(createAttachFragment(ul, pageSize, data), ul.firstChild);
+								}
+								self.refresh(true);
+								mui.toast("刷新成功");
+								// 培训
+								attachpage = 2;
+							});
+						}
+					}
+					mui.ajaxSettings.error = function(xhr, type, errorThrown) {
+						console.log(xhr + "--" + type + "--" + errorThrown);
+					}
+					mui.ajaxSettings.complete = function(xhr, status) {
+						console.log('complete:::' + status);
+					}
+
+					//设置全局complete
+					//				$.ajaxSettings.complete = function(xhr, status) {
+					//					console.log('complete:::' + status);
+					//				}
+					// 最新 获取上拉数据
+					function getUpData(self) {
+						var url;
+						if(self.id == '0') {
+							// 教育
+							url = urlpath + '/a/BaseDataCheck/Environment/APPenvironmentform?id=' + id + '&pageNo=' + argspage + '&pageSize=' + pageSize;
+							//						console.log(url);
+							mui.getJSON(url, {}, function(data) {
+
+								var ul = self.element.querySelector('.mui-table-view');
+								var len = ul.childElementCount;
+								if(argspage <= data.rPageLast) {
+									ul.appendChild(createArgsFragment(ul, pageSize, data));
+									if(argspage == data.rPageLast) {
+										self.endPullUpToRefresh(true);
+									}
+								} else {
+									self.endPullUpToRefresh(true);
+								}
+								argspage++;
+							});
+						} else if(self.id == '1') {
+							url = urlpath + '/a/BaseDataCheck/Environment/APPenvironmentScheduleform?id=' + id + '&pageNo=' + attachpage + '&pageSize=' + pageSize;
+							mui.getJSON(url, {}, function(data) {
+								var ul = self.element.querySelector('.mui-table-view');
+								var len = ul.childElementCount;
+								if(attachpage <= data.rPageLast) {
+									ul.appendChild(createAttachFragment(ul, pageSize, data));
+									if(attachpage == data.rPageLast) {
+										self.endPullUpToRefresh(true);
+									}
+								} else {
+									self.endPullUpToRefresh(true);
+								}
+								attachpage++;
+							});
+						}
+					}
+
+					var createAttachFragment = function(ul, count, data) {
+						var fragment = document.createDocumentFragment();
+						var li;
+						var jg, len;
+						len = data.rDate.length;
+						if(len < count) {
+							count = len;
+						}
+						for(var i = 0; i < count; i++) {
+							li = document.createElement('li');
+							li.id = data.rDate[i].id
+							li.className = 'mui-table-view-cell';
+							li.innerHTML =
+								'<span id="order" style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + parseInt(pageSize * (attachpage - 1) + i + 1) + '</span>' +
+								'<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">' + data.rDate[i].enprnum + '</span>' +
+//								'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].singleData + '</span>' +
+								'<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">' + data.rDate[i].enprname + '</span>' +
+//								'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].reintername + '</span>' +
+//								'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].multipleData + '</span>' +
+//								'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].singleData + '</span>' +
+								'<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">' + data.rDate[i].envalue + '</span>';
+							fragment.appendChild(li);
+						}
+						return fragment;
+					};
+
+					var createArgsFragment = function(ul, count, data) {
+						var fragment = document.createDocumentFragment();
+						var li;
+						var jg, len;
+						len = data.rDate.length;
+						if(len < count) {
+							count = len;
+						}
+						for(var i = 0; i < count; i++) {
+							li = document.createElement('li');
+							li.id = data.rDate[i].id
+							li.className = 'mui-table-view-cell';
+							li.innerHTML =
+								'<span id="order" style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + parseInt(pageSize * (argspage - 1) + i + 1) + '</span>' +
+								'<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">' + data.rDate[i].enprnum + '</span>' +
+								'<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">' + data.rDate[i].enprname + '</span>' +
+								'<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">' + data.rDate[i].envalue + '</span>';
+							fragment.appendChild(li);
+						}
+						return fragment;
+					};
+				});
+				// 将时间戳 转成  yyyy-MM-dd hh:mm:ss 格式时间
+				function timeTransition(timestamp) {
+					console.log(timestamp);
+					var t = new Date(timestamp);
+					return t.getFullYear() + '-' + (t.getMonth() + 1) + "-" + t.getDate() + " " + t.getHours() + ":" + t.getMinutes();
+				}
+				// 获取考试状态 并添加 样式   0  未通过 1 已通过  2 未参加
+				function getTestState(state) {
+					if(state == '2') {
+						return '<span class="mui-pull-right chengse">未参加</span>';
+					} else if(state == '1') {
+						return '<span class="mui-pull-right lvquan">已通过</span>';
+					} else if(state == '0') {
+						return '<span class="mui-pull-right jieshu">未通过</span>';
+					} else {
+						return '<span class="mui-pull-right jieshu">无状态</span>';
+					}
+				}
+				//  获取课程形式  1 文章 2 视频
+				function getFileType(type) {
+					if(type == '1') {
+						return '文章';
+					} else if(type == '2') {
+						return '视频';
+					} else {
+						return '';
+					}
+				}
+				//  获取课程类型  1 选修 2 必修
+				function getCourseStatus(type) {
+					if(type == '1') {
+						return '选修';
+					} else if(type == '2') {
+						return '必修';
+					} else {
+						return '';
+					}
+				}
+
+				function subCont(cont) {
+					if(cont.length > 18) {
+						return cont.substring(0, 18) + "...";
+					}
+					return cont;
+				}
+
+			});
+		</script>
+	</body>
+
+</html>

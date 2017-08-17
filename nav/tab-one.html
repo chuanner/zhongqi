@@ -1,0 +1,266 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/app.css"/>
+		<style type="text/css">
+			#slider img {
+				height: 388px;
+			}
+			
+			.z_home_li {
+				text-align: center;
+				margin-bottom: 20px;
+			}
+			
+			.z_home_li>a img {
+				width: 60px !important;
+			}
+			
+			.n_time {
+				display: block;
+				font-size: 12px;
+				color: #666;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div class="mui-content" style="background-color:#fff;">
+
+			<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<!--数据列表-->
+					<ul class="mui-table-view mui-table-view-chevron" id="news_ul">
+
+					</ul>
+				</div>
+			</div>
+
+			<div id="bottomPopover" class="mui-popover mui-popover-bottom">
+				<div class="mui-popover-arrow"></div>
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view z_ul_btn">
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-hgz.html">合格证数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-coc.html">COC数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-yh.html">油耗数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-mp.html">铭牌数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-hb.html">环保数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-lbj.html">零部件数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-yzx.html">三证数据一致性对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-yzxjg.html">一致性对比结果</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+			<a class="openMenu_a" href="#popover" id="openPopover"></a>
+		</div>
+
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/jquery-3.1.1.js"></script>
+		<script type="text/javascript">
+			var page = 1;
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+//						auto: true, //可选,默认false.首次加载自动下拉刷新一次
+						contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+						contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+						contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+						callback: pulldownRefresh
+					},
+					up: {
+						auto: true,
+						contentrefresh: "数据加载中...",
+						contentnomore: "没有更多数据了",
+						callback: pullupRefresh
+					}
+				}
+			});
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				setTimeout(function() {
+					page = 1;
+					mui.ajax(urlpath + '/a/sys/notice/appToNotice', {
+						data: {
+							pageNo: page,
+							pageSize: 15
+						},
+						type: "post",
+						timeout: 10000,
+						success: function(data) {
+							var data = JSON.parse(data);
+							console.log("成功")
+							var table = document.body.querySelector('.mui-table-view');
+							var len = table.childElementCount;
+
+							//下拉刷新前清空子ul节点
+							for(var i = 0; i >= 2; i--) {
+								table.removeChild(table.childNodes[i]);
+							}
+							if(data.rDate.length != '0') {
+								table.appendChild(createFragment(table, pageSize, data));
+							}
+							mui('#pullrefresh').pullRefresh().refresh(true);
+							mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+							page = 2;
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+							mui.toast('刷新失败');
+						}
+					});
+				}, 1500);
+			}
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				setTimeout(function() {
+					mui.ajax(urlpath + '/a/sys/notice/appToNotice', {
+						data: {
+							pageNo: page,
+							pageSize: 15
+						},
+						type: "post",
+						success: function(data) {
+							var data = JSON.parse(data);
+							var table = document.body.querySelector('.mui-table-view');
+							var len = table.childElementCount;
+
+							if(page <= data.rPageLast) {
+								table.appendChild(createFragment(table, pageSize, data));
+								if(page == data.rPageLast) {
+									mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+								}
+							} else {
+								mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+							}
+							page++;
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+							mui.toast('刷新失败');
+						}
+					});
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+				}, 1500);
+			}
+
+			var createFragment = function(ul, count, data) {
+				var fragment = document.createDocumentFragment();
+				var li;
+				var jg, len;
+				len = data.rDate.length
+				if(len < count) {
+					count = len;
+				}
+				for(var i = 0; i < count; i++) {
+					li = document.createElement('li');
+					li.className = 'mui-table-view-cell';
+					li.innerHTML = '<a class="mui-navigate-right news" data_nid =" ' + data.rDate[i].nid + '" data_con = "' + data.rDate[i].content + '" >' + data.rDate[i].title + ' <span class="n_time">' + data.rDate[i].createDate + '</span></a>';
+					fragment.appendChild(li);
+				}
+				return fragment;
+			};
+
+			mui.ready(function() {
+				//添加newId自定义事件监听
+				window.addEventListener('openMenu', function(e) {
+
+					mui('.mui-scroll-wrapper').scroll();
+					mui('.mui-popover').popover('toggle', document.getElementById("openPopover"));
+				});
+
+				window.addEventListener('closeMenu', function(e) {
+					mui('#bottomPopover').popover('hide');
+				});
+			})
+
+			$(".z_ul_btn li a").on('click', function() {
+				mui.openWindow({
+					url: $(this).attr('data_href'),
+					id: $(this).attr('data_href'),
+					styles: {
+						top: 0, //新页面顶部位置
+						bottom: 0, //新页面底部位置						
+					},
+					extras: {
+
+					},
+					createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true						
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...', //等待对话框上显示的提示内容
+						options: {
+
+						}
+					}
+				})
+				//关闭弹出菜单
+				setTimeout(function() {
+					mui('#bottomPopover').popover('hide'); //show hide toggle
+				}, 200)
+
+			})
+
+			$("#news_ul").on('click', '.news', function() {
+				console.log(11);
+				mui.openWindow({
+					url: 'news.html',
+					id: 'news.html',
+					styles: {
+						top: 0, //新页面顶部位置
+						bottom: 0, //新页面底部位置						
+					},
+					extras: {
+						nid: $(this).attr('data_nid'),
+						con: $(this).attr('data_con'),
+					},
+					createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true						
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...', //等待对话框上显示的提示内容
+						options: {
+
+						}
+					}
+				})
+			})
+		</script>
+	</body>
+
+</html>

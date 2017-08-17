@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>图像识别</title>
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../css/preview_image.css" />
+	</head>
+
+	<body>
+	
+		<div class=" mui-content-padded" id="yz_hgz">
+			<div class="mui-row ">
+				<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">项目名称：</p>
+					<select class="mui-btn mui-btn-block z_sl_1 " name="">
+						<option value="item-1">项目一</option>
+						<option value="item-2">项目二</option>
+					</select>
+				</div>
+				<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">版本号：</p>
+					<select class="mui-btn mui-btn-block z_sl_1 " name="">
+						<option value="item-1">0001</option>
+						<option value="item-2">0002</option>
+					</select>
+				</div>
+				<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">车辆型号：</p>
+					<select class="mui-btn mui-btn-block z_sl_1 " name="">
+						<option value="item-1">HK-001</option>
+						<option value="item-2">HK-002</option>
+					</select>
+				</div>
+				<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">PackageCode：</p>
+					<select class="mui-btn mui-btn-block z_sl_1 " name="">
+						<option value="item-1">001</option>
+						<option value="item-2">002</option>
+					</select>
+				</div>
+			
+
+			<div class="mui-col-sm-6 mui-col-xs-6 z_btn_1">
+				<button onclick="clickCamera()" type="button" class="mui-btn mui-btn-blue mui-btn-outlined" style="margin-left:23% ;">拍照</button>
+
+				<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined">图像识别</button>
+
+				<button type="button" class="imageup mui-btn mui-btn-blue mui-btn-outlined">重拍</button>
+
+				<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined">返回</button>
+
+			</div>
+			
+			<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">识别类型：</p>
+					<select id="z_sele" class="mui-btn mui-btn-block z_sl_1 " name="">
+						<option value="../compare/yz-hgz.html">合格证数据对比</option>
+						<option value="../compare/yz-coc.html">COC数据对比</option>
+						<option value="../compare/yz-yh.html">油耗数据对比</option>
+						<option value="../compare/yz-mp.html">铭牌数据对比</option>
+						<option value="../compare/yz-lbj.html">零部件数据对比</option>
+						<option value="../compare/yz-yzx.html">三证数据一致性对比</option>
+					</select>
+				</div>
+			</div>
+			<div style="padding: 10px 10px;">
+				<div id="segmentedControl" class="mui-segmented-control">
+					<a class="mui-control-item mui-active" href="#item1">
+						图像识别区
+					</a>
+					<a class="mui-control-item" href="#item2">
+						数据一致性对比
+					</a>
+				</div>
+			</div>
+			<div>
+				<div id="item1" class="mui-control-content mui-active mui-content-padded">
+					<div class="z_camera">
+						<div class="z_tab_l">
+							<img id="local_img" src="../images/1.jpg" data-preview-src="" data-preview-group="1" />
+						</div>
+						<div class="z_tab_r">
+							<p>图片信息图片信息图片信息图片信息图片信息图片信息图片信息图片信息图片信息图片信息图片信息图片信息</p>
+						</div>
+					</div>
+				</div>
+				<div id="item2" class="mui-control-content mui-content-padded">
+					<div class="z_result">
+						<p>数据一致性对比结果展示数据一致性对比结果展示数据一致性对比结果展示数据一致性对比结果展示数据一致性对比结果展示数据一致性对比结果展示数据一致性对比结果展示数据一致性对比结果展示数据一致性对比结果展示</p>
+					</div>
+				</div>
+
+				<div class="mui-row z_btn_2">
+					<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined">数据一致性对比</button>
+				</div>
+				<div class="mui-row z_btn_2">
+					<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined">保存数据对比结果</button>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/mui.js"></script>
+		<script src="../js/mui.zoom.js"></script>
+		<script src="../js/mui.previewimage.js"></script>
+		<script>
+			//mui初始化
+			mui.init({
+
+			});
+
+			///////////////////////图片拍照选取上传///////////////////////////
+			function plusReady() {
+				// 弹出系统选择按钮框  
+				mui("body").on("tap", ".imageup", function() {
+					page.imgUp();
+				})
+			}
+
+			var page = null;
+			page = {
+				imgUp: function() {
+					var m = this;
+					plus.nativeUI.actionSheet({
+						cancel: "取消",
+						buttons: [{
+								title: "拍照"
+							},
+							{
+								title: "从相册中选择"
+							}
+						]
+					}, function(e) { //1 是拍照  2 从相册中选择  
+						switch(e.index) {
+							case 1:
+								clickCamera();
+								break;
+							case 2:
+								clickGallery();
+								break;
+						}
+					});
+				}
+				//摄像头  
+			}
+
+			//发送照片  
+			function clickGallery() {
+				plus.gallery.pick(function(path) {
+					plus.zip.compressImage({
+						src: path,
+						dst: "_doc/chat/gallery/" + path,
+						quality: 20,
+						overwrite: true
+					}, function(e) {
+						var task = plus.uploader.createUpload(server + "upload/chat", {
+							method: "post"
+						}, function(t, sta) {
+							console.log(JSON.stringify(t))
+							if(sta == 200) {
+								var msg = t.responseText;
+								var oImg = JSON.parse(msg);
+								var imgUrl = oImg.urls;
+								var re = new RegExp("\\\\", "g");
+								imgUrl = imgUrl.replace(re, "/");
+								uploadMsg(2, imgUrl);
+							}
+						});
+						task.addFile(e.target, {});
+						task.start();
+					}, function(err) {
+						console.error("压缩失败：" + err.message);
+					});
+
+				}, function(err) {});
+			};
+
+			//拍照  
+			function clickCamera() {
+				var cmr = plus.camera.getCamera();
+				var res = cmr.supportedImageResolutions[0];
+				var fmt = cmr.supportedImageFormats[0];
+				cmr.captureImage(function(path) {
+					console.log(path);
+
+					plus.io.resolveLocalFileSystemURL(path, function(entry) {
+						var localUrl = entry.toLocalURL();
+						var local_img = document.getElementById("local_img");
+						local_img.setAttribute("src", localUrl);
+						console.log(localUrl);
+						plus.zip.compressImage({
+							src: localUrl,
+							dst: "_doc/chat/camera/" + localUrl,
+							quality: 20,
+							overwrite: true
+						}, function(e) {
+							var task = plus.uploader.createUpload(server + "upload/chat", {
+								method: "post"
+							}, function(t, sta) {
+								if(sta == 200) {
+									var msg = t.responseText;
+									var oImg = JSON.parse(msg);
+									var imgUrl = oImg.urls;
+									var re = new RegExp("\\\\", "g");
+									imgUrl = imgUrl.replace(re, "/");
+									console.log(imgUrl);
+
+									uploadMsg(2, imgUrl);
+								}
+							});
+							task.addFile(e.target, {});
+							task.start();
+						}, function(err) {
+							console.log("压缩失败：  " + err.message);
+						});
+
+					});
+				}, function(err) {
+					console.error("拍照失败：" + err.message);
+				}, {
+					index: 1
+				});
+			};
+
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			}
+			//////////////////////////////////////////////////////////////
+
+			//图片预览
+			mui.previewImage();
+			
+			
+			//跳转
+			var z_sele = document.getElementById("z_sele");
+			z_sele.onchange= function(){
+				var z_href = z_sele.value;
+				console.log(z_href);
+				mui.openWindow({
+					url:z_href,
+					id:z_href,
+					show:{
+						autoShow:true
+					},
+					extras:{
+				        name:'数值1',
+				        version:'数值2'
+				    }
+				})
+			}
+			
+		</script>
+	</body>
+
+</html>

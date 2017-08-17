@@ -1,0 +1,285 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			
+			.mui-bar~.mui-content .mui-fullscreen {
+				top: 44px;
+				height: auto;
+			}
+			
+			.mui-pull-top-tips {
+				position: absolute;
+				top: -20px;
+				left: 50%;
+				margin-left: -25px;
+				width: 40px;
+				height: 40px;
+				border-radius: 100%;
+				z-index: 1;
+			}
+			
+			.mui-bar~.mui-pull-top-tips {
+				top: 24px;
+			}
+			
+			.mui-pull-top-wrapper {
+				width: 42px;
+				height: 42px;
+				display: block;
+				text-align: center;
+				background-color: #efeff4;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+				box-shadow: 0 4px 10px #bbb;
+				overflow: hidden;
+			}
+			
+			.mui-pull-top-tips.mui-transitioning {
+				-webkit-transition-duration: 200ms;
+				transition-duration: 200ms;
+			}
+			
+			.mui-pull-top-tips .mui-pull-loading {
+				/*-webkit-backface-visibility: hidden;
+				-webkit-transition-duration: 400ms;
+				transition-duration: 400ms;*/
+				margin: 0;
+			}
+			
+			.mui-pull-top-wrapper .mui-icon,
+			.mui-pull-top-wrapper .mui-spinner {
+				margin-top: 7px;
+			}
+			
+			.mui-pull-top-wrapper .mui-icon.mui-reverse {
+				/*-webkit-transform: rotate(180deg) translateZ(0);*/
+			}
+			
+			.mui-pull-bottom-tips {
+				text-align: center;
+				background-color: #efeff4;
+				font-size: 15px;
+				line-height: 40px;
+				color: #777;
+			}
+			
+			.mui-pull-top-canvas {
+				overflow: hidden;
+				background-color: #fafafa;
+				border-radius: 40px;
+				box-shadow: 0 4px 10px #bbb;
+				width: 40px;
+				height: 40px;
+				margin: 0 auto;
+			}
+			
+			.mui-pull-top-canvas canvas {
+				width: 40px;
+			}
+			
+			.mui-slider-indicator.mui-segmented-control {
+				background-color: #efeff4;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="slider" class="mui-slider mui-fullscreen">
+			<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="height: 44px;background: #4092c4;">
+				<div id="divnav" class="mui-scroll" style="width: 100%;padding-top: 5px;font-size: 16px;">
+					<!--<a class="mui-control-item mui-active" href="#item1mobile" style="width: 17%;">
+							组织会议
+						</a>
+						<a class="mui-control-item" href="#item2mobile" style="width: 17%;">
+							组织活动
+						</a>
+						<a class="mui-control-item" href="#item2mobile" style="width: 17%;">
+							组织活动
+						</a>
+						<a class="mui-control-item" href="#item2mobile" style="width: 17%;">
+							组织活动
+						</a>-->
+				</div>
+			</div>
+			<div id="divcont" class="mui-slider-group">
+				<!--<div id="item1mobile" class="mui-slider-item mui-control-content">
+					<div id="scroll1" class="mui-scroll-wrapper">
+						<div class="mui-scroll mui-card">
+							<ul class="mui-table-view">555
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div id="item2mobile" class="mui-slider-item mui-control-content">
+					<div id="scroll2" class="mui-scroll-wrapper">
+						<div class="mui-scroll mui-card">
+							<ul class="mui-table-view">666
+							</ul>
+						</div>
+					</div>
+				</div>-->
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+
+			mui.back = function() {
+				plus.webview.currentWebview().close();
+			}
+
+			mui.plusReady(function() {
+				var firstwvid;
+				var wv = plus.webview.currentWebview();
+				var wvid = wv.id;
+				console.log(wvid);
+				var data = wvid.split("-fudd-");
+
+				var csid = data[0];
+				var anid = data[1];
+				var editioncode = data[2];
+//				var csid = '994b75498f8f4401892ecc3e8584446f';
+//				var anid = 'a4e04a577d834f7888b257d239350a71';
+
+				console.log(csid);
+				console.log(anid);
+				var listUrl = urlpath + '/a/configuration_rule/tcConfigurationRule/apppagecode?anid=' + anid + "&csid=" + csid;
+				console.log(listUrl);
+				mui.getJSON(listUrl, {}, function(data) {
+					console.log(JSON.stringify(data));
+					var len = data.rDate.length;
+					console.log(len);
+					console.log(data.rDate[0]);
+					var diva = document.getElementById("divnav");
+					var w = parseInt(100 / len) - 3;
+					console.log(w);
+					for(var i = 0; i < len; i++) {
+						var a = document.createElement('a');
+						if(i == 0) {
+							a.className = "mui-control-item mui-active mui-ellipsis";
+							firstwvid = data.rDate[i] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
+						} else {
+							a.className = "mui-control-item mui-ellipsis";
+						}
+						a.href = "#item" + (i + 1) + "mobile";
+						console.log(a.getAttribute("href"));
+						a.id = data.rDate[i] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
+						//						a.name = "tabname" + (i + 1);
+						a.setAttribute("style", "width: " + w + "%;");
+						a.innerHTML = data.rDate[i];
+						a.addEventListener('tap', function() {
+							console.log("sub id = "+this.getAttribute("id"));
+							mui.openWindow({
+								id: this.getAttribute("id"),
+								url: 'page-sub.html',
+								styles: {
+									top: '45px',
+									popGesture: 'close'
+								},
+								show: {
+									aniShow: 'slide-in-right'
+								},
+								waiting: {
+									autoShow: false
+								}
+							});
+						});
+						diva.appendChild(a);
+					}
+					console.log("sub id = "+firstwvid);
+					mui.openWindow({
+						id: firstwvid,
+						url: 'page-sub.html',
+						styles: {
+							top: '45px',
+							popGesture: 'close'
+						},
+						show: {
+							aniShow: 'slide-in-right'
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
+					//					var divcont = document.getElementById("divcont");
+					//					for(var i = 0; i < len; i++) {
+					//						var div = document.createElement('div');
+					//						//						div.id = "item" + (i + 1) + "mobile";
+					//						div.setAttribute("id", "item" + (i + 1) + "mobile");
+					//						var idm = div.getAttribute("id");
+					//						console.log(idm);
+					//						div.className = "mui-slider-item mui-control-content";
+					//						div.innerHTML =
+					//							'<div class="mui-scroll-wrapper">' +
+					//							'<div class="mui-scroll mui-card">' +
+					//							'<ul class="mui-table-view">' + (i + 1) +
+					//							'</ul>' +
+					//							'</div>' +
+					//							'</div>';
+					//						divcont.appendChild(div);
+					//					}
+
+				});
+
+				mui(".mui-scroll").on("tap", ".mui-control-item", function(e) {
+					var wid = this.getAttribute("id");
+					//					group.switchTab(wid);
+					console.log(wid);
+				});
+				//当前激活选项
+				var activeTab = '#item1mobile';
+				//选项卡点击事件
+				mui('.mui-scroll').on('tap', 'a', function(e) {
+					console.log(activeTab);
+					var targetTab = this.getAttribute('href');
+					if(targetTab == activeTab) {
+						return;
+					}
+					//显示目标选项卡
+					//若为iOS平台或非首次显示，则直接显示
+					if(mui.os.ios) {
+						plus.webview.show(targetTab);
+					} else {
+						//否则，使用fade-in动;画，且保存变量
+						plus.webview.show(targetTab, "fade-in", 300);
+					}
+					//隐藏当前;
+					plus.webview.close(activeTab);
+					//更改当前活跃的选项卡
+					activeTab = targetTab;
+				});
+				//自定义事件，模拟点击“首页选项卡”
+				document.addEventListener('gohome', function() {
+					console.log("go");
+					goNews();
+				});
+				console.log("4555");
+				var goNews = function() {
+					console.log("2222");
+					var defaultTab = document.getElementsByName("tabname1")
+					//模拟首页点击
+					mui.trigger(defaultTab, 'tap');
+					//				//切换选项卡高亮
+					//				var current = document.querySelector(".mui-scroll>.mui-tab-item.mui-active");
+					//				if(defaultTab !== current) {
+					//					current.classList.remove('mui-active');
+					//					defaultTab.classList.add('mui-active');
+					//				}
+				}
+
+			});
+		</script>
+	</body>
+
+</html>

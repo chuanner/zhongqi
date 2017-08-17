@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/app.css" />
+		<style type="text/css">
+			.bl-box {
+				height: 200px;
+				margin-top: 40px;
+			}
+			
+			.bl-main {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+			}
+			
+			.bl-main>section {
+				position: absolute;
+				width: 50%;
+				height: 50%;
+			}
+			
+			.bl-main>section:first-child {
+				top: 0;
+				left: 0;
+				background: #F06060;
+			}
+			
+			.bl-main>section:nth-child(2) {
+				top: 0;
+				left: 50%;
+				background: #FA987D;
+			}
+			
+			.bl-main>section:nth-child(3) {
+				top: 50%;
+				left: 0;
+				background: #72CCA7;
+			}
+			
+			.bl-main>section:nth-child(4) {
+				top: 50%;
+				left: 50%;
+				background: #10A296;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="container">
+				<div id="bl-main" class="bl-main" style="background: white;">
+					<section id="om" style="background: white;padding: 2px;padding-bottom: 20px;">
+						<div class="bl-box" style="background: url(../images/home_1.png) no-repeat center;background-size: auto 150px;">
+							<!--<h2 class="">1</h2>-->
+						</div>
+						<div style="color: black;text-align: center;">公告数据</div>
+					</section>
+					<section id="coc" style="background: white;padding: 2px;padding-bottom: 20px;">
+						<div class="bl-box" style="background: url(../images/home_2.png)no-repeat center;background-size: auto 150px;">
+							<!--<h2 >2</h2>-->
+						</div>
+						<div style="color: black;text-align: center;">COC信息</div>
+					</section>
+					<section id="qtrip" style="background: white;padding: 2px;padding-bottom: 20px;">
+						<div class="bl-box" style="background: url(../images/home_3.png) no-repeat center;background-size: auto 150px;">
+							<!--<h2 class="">3</h2>-->
+						</div>
+						<div style="color: black;text-align: center;">油耗信息</div>
+					</section>
+					<section id="env" style="background: white;padding: 2px;padding-bottom: 20px;">
+						<div class="bl-box" style="background: url(../images/home_4.png) no-repeat center;background-size: auto 150px;">
+							<!--<h2 class="">4</h2>-->
+						</div>
+						<div style="color: black;text-align: center;">环保信息</div>
+					</section>
+				</div>
+			</div>
+			<div id="bottomPopover" class="mui-popover mui-popover-bottom">
+				<div class="mui-popover-arrow"></div>
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view z_ul_btn">
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-hgz.html">合格证数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-coc.html">COC数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-yh.html">油耗数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-mp.html">铭牌数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-hb.html">环保数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-lbj.html">零部件数据对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-yzx.html">三证数据一致性对比</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a data_href="../compare/yz-yzxjg.html">一致性对比结果</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+			<a class="openMenu_a" href="#popover" id="openPopover"></a>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/jquery-3.1.1.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				plus.screen.lockOrientation("landscape-primary");
+			});
+			document.getElementById("om").addEventListener("tap", function() {
+				mui.openWindow({
+					id: 'confsplit-main.html',
+					url: '../confsplit/confsplit-main.html',
+					styles: {
+						popGesture: 'close'
+					},
+					show: {
+						aniShow: 'slide-in-right'
+					}
+				});
+			});
+			document.getElementById("coc").addEventListener("tap", function() {
+				mui.openWindow({
+					id: 'coc-main.html',
+					url: '../coc/coc-main.html',
+					styles: {
+						popGesture: 'close'
+					},
+					show: {
+						aniShow: 'slide-in-right'
+					}
+				});
+			});
+
+			document.getElementById("qtrip").addEventListener("tap", function() {
+				mui.openWindow({
+					id: 'qtrip-main.html',
+					url: '../qtrip/qtrip-main.html',
+					styles: {
+						popGesture: 'close'
+					},
+					show: {
+						aniShow: 'slide-in-right'
+					}
+				});
+			});
+			document.getElementById("env").addEventListener("tap", function() {
+				mui.openWindow({
+					id: 'env-arglist-main.html',
+					url: '../environmental/env-arglist-main.html',
+					styles: {
+						popGesture: 'close'
+					},
+					show: {
+						aniShow: 'slide-in-right'
+					}
+				});
+			});
+
+			//添加newId自定义事件监听
+			window.addEventListener('openMenu', function(e) {
+				//跨webvie获取参数
+				var name = e.detail.name;
+				console.log("触发成功");
+				console.log(name);
+				mui('.mui-scroll-wrapper').scroll();
+				mui('.mui-popover').popover('toggle', document.getElementById("openPopover"));
+			});
+			
+			window.addEventListener('closeMenu', function(e) {
+					mui('#bottomPopover').popover('hide');
+				});
+			
+			$(".z_ul_btn li a").on('click', function() {
+				mui.openWindow({
+					url: $(this).attr('data_href'),
+					id: $(this).attr('data_href'),
+					styles: {
+						top: 0, //新页面顶部位置
+						bottom: 0, //新页面底部位置						
+					},
+					extras: {
+
+					},
+					createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true						
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...', //等待对话框上显示的提示内容
+						options: {
+
+						}
+					}
+				})
+				//关闭弹出菜单
+				setTimeout(function(){
+					mui('#bottomPopover').popover('hide');//show hide toggle
+				},200)
+			})
+			
+		</script>
+	</body>
+
+</html>

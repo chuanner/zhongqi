@@ -1,0 +1,333 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style>
+			.ulo {
+				height: 45%;
+			}
+			
+			.ult {
+				height: 45%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper mui-card" style="height: 100%;">
+			<div class="mui-scroll">
+				<ul id="ul1" class="mui-table-view">
+					<li class="mui-table-view-cell" style="width: 100%;background: #4092c4;">
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">序号</span>
+						<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">项目名称</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">参数编码</span>-->
+						<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">多配置参数名称</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">配置选择</span>
+						<!--<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">pagecode</span>-->
+						<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">参数值</span>-->
+						<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">实车原图</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">一致性标记</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">备注</span>
+						<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">图片</span>-->
+						<!--<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">中文品牌</span>-->
+					</li>
+				</ul>
+			</div>
+			<hr />
+			<div class="mui-scroll">
+				<ul id="ul2" class="mui-table-view" >
+					<li class="mui-table-view-cell" style="width: 100%;background: #4092c4;">
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">序号</span>
+						<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">项目名称</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">参数编码</span>-->
+						<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">选装配置名称</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">是否安装</span>
+						<!--<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">pagecode</span>-->
+						<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">参数值</span>-->
+						<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">实车原图</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">一致性标记</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">备注</span>
+						<!--<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">图片</span>-->
+						<!--<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">中文品牌</span>-->
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script type="text/javascript">
+			var page1 = 1;
+			var page2 = 1;
+			mui.plusReady(function() {
+				plus.screen.lockOrientation("landscape-primary");
+
+				mui.back = function() {
+					console.log("back");
+					var wvs = plus.webview.all();
+					for(var i = 0; i < wvs.length; i++) {
+						console.log(wvs[i].id);
+						if(wvs[i].id.indexOf("-fudd-") > 0 || wvs[i].id == 'pagecode-sub.html') {
+							plus.webview.getWebviewById(wvs[i].id).close();
+						}
+					}
+				}
+
+				plus.screen.lockOrientation("landscape-primary");
+				var wv = plus.webview.currentWebview();
+				var ids = wv.id;
+				var data = ids.split("-fudd-");
+				var pagecode = data[0];
+				var csid = data[1];
+				var anid = data[2];
+				var editioncode = data[3];
+				console.log(pagecode);
+
+				mui.init({
+					pullRefresh: {
+						container: '#pullrefresh',
+						down: {
+							//auto: true, //可选,默认false.首次加载自动下拉刷新一次
+							style: 'circle',
+							contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+							contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+							contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+							callback: pulldownRefresh
+						},
+						up: {
+							auto: true,
+							contentrefresh: "数据加载中...",
+							contentnomore: "没有更多数据了",
+							callback: pullupRefresh
+						}
+					}
+				});
+				/**
+				 * 下拉刷新具体业务实现
+				 */
+				function pulldownRefresh() {
+					console.log("下拉刷新");
+					setTimeout(function() {
+						page1 = 1;
+						page2 = 1;
+						var url = urlpath + '/a/configuration_rule/tcConfigurationRule/appshow?pagecode=' + pagecode + '&anid=' + anid + '&csid=' + csid + '&editioncode=' + editioncode + '&pageNo=' + page1 + '&pageSize=' + pageSize;
+						console.log(url);
+						mui.getJSON(url, {}, function(data) {
+							console.log(JSON.stringify(data));
+							//							var ul = document.querySelector('.mui-table-view');
+							var ul = document.getElementById("ul1");
+							var len = ul.childElementCount;
+							console.log(len);
+							console.log(ul.childNodes.length);
+							//下拉刷新前清空子ul节点
+							for(var i = ul.childNodes.length - 1; i >= 2; i--) {
+								ul.removeChild(ul.childNodes[i]);
+							}
+							console.log(ul.childNodes.length);
+							if(data.rDate.length != '0') {
+								ul.appendChild(createFragment(ul, pageSize, data));
+							}
+							mui('#pullrefresh').pullRefresh().refresh(true);
+							mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+							page1 = 2;
+							
+						});
+						
+						var url2 = urlpath + '/a/configuration_rule/tcConfigurationRule/appshow2?pagecode=' + pagecode + '&anid=' + anid + '&csid=' + csid + '&editioncode=' + editioncode + '&pageNo=' + page2 + '&pageSize=' + pageSize;
+						console.log(url2);
+						mui.getJSON(url2, {}, function(data) {
+							console.log(JSON.stringify(data));
+							//							var ul = document.querySelector('.mui-table-view');
+							var ul2 = document.getElementById("ul2");
+							var len = ul2.childElementCount;
+							console.log(len);
+							console.log(ul2.childNodes.length);
+							//下拉刷新前清空子ul节点
+							for(var i = ul2.childNodes.length - 1; i >= 2; i--) {
+								ul2.removeChild(ul2.childNodes[i]);
+							}
+							console.log(ul2.childNodes.length);
+							if(data.rDate.length != '0') {
+								ul2.appendChild(createFragment2(ul2, pageSize, data));
+							}
+							mui('#pullrefresh').pullRefresh().refresh(true);
+							mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+							page2 = 2;
+						});
+					}, 1500);
+//					page = 2;
+				}
+				/**
+				 * 上拉加载具体业务实现
+				 */
+				function pullupRefresh() {
+					console.log("开始上拉：" + page1);
+					console.log("开始上拉：" + page2);
+					setTimeout(function() {
+						var url = urlpath + '/a/configuration_rule/tcConfigurationRule/appshow?pagecode=' + pagecode + '&anid=' + anid + '&csid=' + csid + '&editioncode=' + editioncode + '&pageNo=' + page1 + '&pageSize=' + pageSize;
+						//					var url = urlpath + '/a/BaseDataCheck/Announcement/AppAnList?pageNo=' + page + '&pageSize=' + pageSize;
+						console.log(url);
+						mui.getJSON(url, {}, function(data) {
+							console.log(JSON.stringify(data));
+							//							var ul = document.querySelector('.mui-table-view');
+							var ul = document.getElementById("ul1");
+							var len = ul.childElementCount;
+							console.log(page1 +"-----"+data.rPageLast);
+							if(page1 <= data.rPageLast) {
+								ul.appendChild(createFragment(ul, pageSize, data));
+								if(page1 == data.rPageLast) {
+									mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+								}
+							} else {
+								mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+							}
+							page1++;
+						});
+						
+						var url2 = urlpath + '/a/configuration_rule/tcConfigurationRule/appshow2?pagecode=' + pagecode + '&anid=' + anid + '&csid=' + csid + '&editioncode=' + editioncode + '&pageNo=' + page2 + '&pageSize=' + pageSize;
+						mui.getJSON(url2, {}, function(data) {
+							//							var ul = document.querySelector('.mui-table-view');
+							var ul2 = document.getElementById("ul2");
+							var len = ul2.childElementCount;
+							if(page2 <= data.rPageLast) {
+								ul2.appendChild(createFragment2(ul2, pageSize, data));
+								if(page2 == data.rPageLast) {
+									mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+								}
+							} else {
+								mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+							}
+							page2++;
+						});
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+//						page++;
+					}, 1500);
+					
+				}
+
+				var createFragment = function(ul, count, data) {
+					var fragment = document.createDocumentFragment();
+					var li;
+					var jg, len;
+					len = data.rDate.length
+					if(len < count) {
+						count = len;
+					}
+					for(var i = 0; i < count; i++) {
+
+						console.log("fbid=" + data.rDate[i].id);
+						console.log("photo=" + data.rDate[i].photo);
+//						parseInt(pageSize * (page - 1) + i + 1)
+						console.log(page1);
+						li = document.createElement('li');
+						li.id = data.rDate[i].id+ "-fudd-" +data.rDate[i].photo;
+						li.className = 'mui-table-view-cell';
+						li.innerHTML =
+							'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + parseInt(pageSize * (page1 - 1) + i + 1) + '</span>' +
+							//							'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].projname + '</span>' +
+							//							'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].paramcode + '</span>' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">' + data.rDate[i].paramname + '</span>' +
+							//							'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].pagecode + '</span>' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].paramvalue + '</span>' +
+							'<img  style="float: left;text-align: center;" class="mui-col-sm-3" src="' + urlpic + data.rDate[i].photo + '">' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + showCoherence(data.rDate[i].uniflag) + '</span>' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + unNull(data.rDate[i].remark) + '</span>';
+						li.addEventListener('tap', function() {
+
+							mui.openWindow({
+								id: this.getAttribute("id"),
+								url: 'uploader.html',
+								styles: {
+									popGesture: 'close'
+								},
+								show: {
+									aniShow: 'slide-in-right'
+								},
+								waiting: {
+									autoShow: false
+								}
+							});
+						});
+						fragment.appendChild(li);
+					}
+					return fragment;
+				};
+				var createFragment2 = function(ul, count, data) {
+					var fragment = document.createDocumentFragment();
+					var li;
+					var jg, len;
+					len = data.rDate.length
+					if(len < count) {
+						count = len;
+					}
+					for(var i = 0; i < count; i++) {
+
+						console.log("fbid=" + data.rDate[i].id);
+						console.log("photo=" + data.rDate[i].photo);
+						li = document.createElement('li');
+						li.id = data.rDate[i].id+ "-fudd-" +data.rDate[i].photo;
+						li.className = 'mui-table-view-cell';
+						li.innerHTML =
+							'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + parseInt(pageSize * (page2 - 1) + i + 1) + '</span>' +
+							//							'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].projname + '</span>' +
+							//							'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].paramcode + '</span>' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">' + data.rDate[i].paramname + '</span>' +
+							//							'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].pagecode + '</span>' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].paramvalue + '</span>' +
+							'<img  style="float: left;text-align: center;" class="mui-col-sm-3" src="' + urlpic + data.rDate[i].photo + '">' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + showCoherence(data.rDate[i].uniflag) + '</span>' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + unNull(data.rDate[i].remark) + '</span>';
+						li.addEventListener('tap', function() {
+
+							mui.openWindow({
+								id: this.getAttribute("id"),
+								url: 'uploader.html',
+								styles: {
+									popGesture: 'close'
+								},
+								show: {
+									aniShow: 'slide-in-right'
+								},
+								waiting: {
+									autoShow: false
+								}
+							});
+						});
+						fragment.appendChild(li);
+					}
+					return fragment;
+				};
+			});
+
+			function getpic(picpath) {
+				if(picpath) {
+					return urlpic + picpath;
+				} else {
+					return "";
+				}
+			}
+			
+			function showCoherence(str){
+				console.log("sss");
+				if(str == '1'){
+					return "是";
+				}else{
+					return "否";
+				}
+			}
+			
+			
+			function unNull(data){
+				if(data){
+					return data;
+				}else{
+					return "";
+				}
+			}
+		</script>
+	</body>
+
+</html>

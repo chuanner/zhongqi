@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>图像识别</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../css/preview_image.css" />
+		<style type="text/css">
+			.z_table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+			
+			.z_table th,
+			.z_table td {
+				border: 1px solid #dbdbdb;
+				font-size: 12px;
+				color: #666;
+				font-weight: 400;
+				text-align: center;
+				height: 40px;
+			}
+			
+			#z_textarea {
+				display: block;
+				height: 100%;
+				font-size: 14px;
+				color: #666;
+				border: none;
+				background: rgba(0, 0, 0, 0);
+			}
+			
+			#z_tbody {}
+			
+			#canvas {
+				display: block;
+				width: 100%;
+				height: 100%;
+				background: red;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">数据一致性对比</h1>
+		</header>
+
+		<div class=" mui-content-padded" id="yz_hgz" style="margin-top: 60px;">
+			<div class="mui-row ">
+				<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">项目名称：</p>
+					<select id="sel_pro_name" class="mui-btn mui-btn-block z_sl_1 " name="" disabled="disabled">
+						<option value=""></option>
+					</select>
+				</div>
+				<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">版本号：</p>
+					<select id="sel_pro_ban" class="mui-btn mui-btn-block z_sl_1 " name="" disabled="disabled">
+						<option value=""></option>
+					</select>
+				</div>
+				<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">车辆型号：</p>
+					<select id="sel_pro_xh" class="mui-btn mui-btn-block z_sl_1 " name="" disabled="disabled">
+						<option value=""></option>
+					</select>
+				</div>
+				<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">PackageCode：</p>
+					<select id="sel_pro_code" class="mui-btn mui-btn-block z_sl_1 " name="" disabled="disabled">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+			
+
+			<div>
+				<!--隐藏域-->
+				<input id="bdid" type="hidden" />
+				<input id="result" type="hidden" />
+				<div class="mui-content-padded" style="height: 350px; overflow: scroll; border: 1px solid #DBDBDB;">
+					<table class="z_table" border="1" cellspacing="0" cellpadding="0">
+						<thead>
+							<tr>
+								<th>coc参数项</th>
+								<th>coc参数值</th>
+								<th>合格证参数项</th>
+								<th>合格证参数值</th>
+								<th>油耗参数项</th>
+								<th>油耗参数值</th>
+								<th>铭牌参数项</th>
+								<th>铭牌参数值</th>
+							</tr>
+						</thead>
+						<tbody id="z_tbody">
+
+						</tbody>
+
+					</table>
+				</div>
+
+				<div class="mui-content-padded" style="height: 200px; border: 1px solid #DBDBDB;">
+					<textarea disabled = 'disabled' id="result_msg" name="" rows="" cols="" style="display: block;width: 100%; height: 100%;"></textarea>
+				</div>
+
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script src="../js/mui.zoom.js"></script>
+		<script src="../js/mui.previewimage.js"></script>
+		<script type="text/javascript" src="../js/jquery-3.1.1.js"></script>
+		<!--<script type="text/javascript" src="../js/ajaxupload.3.9.js"></script>-->
+		<script type="text/javascript" src="../js/exif.js"></script>
+		<script type="text/javascript">
+			//mui初始化
+			mui.init({
+
+			});
+			var self;
+			var projname;
+			var anmodel;
+			var editioncode;
+			var pagecode;
+
+			//ajax请求数据 四级联动
+			var sel_pro_name = document.getElementById('sel_pro_name');
+			var sel_pro_ban = document.getElementById('sel_pro_ban');
+			var sel_pro_xh = document.getElementById('sel_pro_xh');
+			var sel_pro_code = document.getElementById('sel_pro_code');
+			var z_tbody = document.getElementById('z_tbody');
+			var bdid = document.getElementById('bdid');
+			var result = document.getElementById('result');
+			var z_textarea = document.getElementById('z_textarea');
+			var local_img = document.getElementById('local_img');
+			var trueFileName = document.getElementById('trueFileName');
+
+			var txsb_can = false;
+
+			function plusReady() {
+				//页面传值
+				self = plus.webview.currentWebview();
+				projname = self.projname;
+				anmodel = self.anmodel;
+				editioncode = self.editioncode;
+				pagecode = self.pagecode;
+				console.log(projname);
+				console.log(anmodel);
+				console.log(editioncode);
+				console.log(pagecode);
+
+				$("#sel_pro_name option").val(projname).text(projname);
+				$("#sel_pro_xh option").val(anmodel).text(anmodel);
+				$("#sel_pro_ban option").val(editioncode).text(editioncode);
+				$("#sel_pro_code option").val(pagecode).text(pagecode);
+				
+				
+				mui.ajax(urlpath + '/a/dataCompare/bdThree/goAppCompare', {
+					data: {
+						projectname: projname,
+						anmodel: anmodel,
+						editioncode: editioncode,
+						packagecode: pagecode
+					},
+					type: 'post', //HTTP请求类型
+					success: function(data) {
+						console.log("55555");
+						$("#result_msg").val(data.bdListBaseThree.bdMsg);
+						var data_list = data.bdThreeDataList;
+						var tbody = '';
+						for(var i = 0, len = data_list.length; i < len; i++) {
+							var cocPrname = data.bdThreeDataList[i].cocPrname || '';
+							var cocPrvalue = data.bdThreeDataList[i].cocPrvalue || '';
+							var hgzPrname = data.bdThreeDataList[i].hgzPrname || '';
+							var hgzPrvalue = data.bdThreeDataList[i].hgzPrvalue || '';
+							var yhPrname = data.bdThreeDataList[i].yhPrname || '';
+							var yhPrvalue = data.bdThreeDataList[i].yhPrvalue || '';
+							var mpPrname = data.bdThreeDataList[i].mpPrname || '';
+							var mpPrvalue = data.bdThreeDataList[i].mpPrvalue || '';
+							var f = '';
+							if(data.bdThreeDataList[i].isYizhi == '1') {
+								f = "<tr style='background-color:#7CFC00'><td>" +
+									cocPrname + "</td><td>" +
+									cocPrvalue + "</td><td >" +
+									hgzPrname + "</td><td >" +
+									hgzPrvalue + "</td><td >" +
+									yhPrname + "</td><td >" +
+									yhPrvalue + "</td><td >" +
+									mpPrname + "</td><td >" +
+									mpPrvalue + "</td></tr>";
+							} else {
+								f = "<tr><td>" +
+									cocPrname + "</td><td>" +
+									cocPrvalue + "</td><td >" +
+									hgzPrname + "</td><td >" +
+									hgzPrvalue + "</td><td >" +
+									yhPrname + "</td><td >" +
+									yhPrvalue + "</td><td >" +
+									mpPrname + "</td><td >" +
+									mpPrvalue + "</td></tr>";
+							}
+							tbody = tbody + f;
+						}
+						$('#z_tbody').html(tbody);
+						shujucompare();
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+					}
+				});
+
+			
+			}
+
+
+
+			//数据一致性比对
+			function shujucompare() {
+				var postdata = new Array();
+				var i = 0;
+				$("#z_tbody").find("tr").each(function() {
+
+					var element = {};
+					element.cocPrname = $(this).find("td").eq(0).text();
+					element.cocPrvalue = $(this).find("td").eq(1).text();
+					element.hgzPrname = $(this).find("td").eq(2).text();
+					element.hgzPrvalue = $(this).find("td").eq(3).text();
+					element.yhPrname = $(this).find("td").eq(4).text();
+					element.yhPrvalue = $(this).find("td").eq(5).text();
+					element.mpPrname = $(this).find("td").eq(6).text();
+					element.mpPrvalue = $(this).find("td").eq(7).text();
+					postdata[i] = element;
+					i = i + 1;
+				});
+				var postData = JSON.stringify(postdata);
+				mui.ajax(urlpath + '/a/dataCompare/bdThree/compare', {
+					data: {
+						shuju: postData,
+						projectname: sel_pro_name.value,
+						anmodel: sel_pro_xh.value,
+						editioncode: sel_pro_ban.value,
+						packagecode: sel_pro_code.value
+					},
+					type: "post",
+					success: function(data) {
+						$("#bdid").val(data.bdid);
+						var result = data.result;
+						$("#result").val(result);
+						var result_msg = data.result_msg;
+						$("#result_msg").val(result_msg);
+
+					},
+					error: function(data) {}
+				});
+			}
+
+			//保存比对结果
+			function saveResult() {
+				var bdid = $("#bdid").val();
+				var result = $("#result").val();
+				var result_msg = $("#result_msg").val();
+				mui.ajax(urlpath + '/a/dataCompare/bdThree/saveResult', {
+					data: {
+						result: result,
+						result_msg: result_msg,
+						bdid: bdid
+					},
+					type: "post",
+					success: function(data) {
+						mui.toast("保存比对结果成功");
+					},
+					error: function(data) {
+
+					}
+				});
+
+			}
+			
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			}
+		</script>
+	</body>
+
+</html>

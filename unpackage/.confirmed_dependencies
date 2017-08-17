@@ -1,0 +1,607 @@
+{
+	"nav/tab-main.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"nav/tab-one.html",
+			"css/app.css",
+			"compare/yz-hgz.html"
+		],
+		"refer": [
+			"nav/tab-one.html",
+			"nav/tab-two.html",
+			"nav/tab-four.html",
+			"nav/tab-three.html",
+			"login/login.html",
+			"guide/guide.html",
+			"compare/yz-hgz.html"
+		]
+	},
+	"nav/tab-two.html": {
+		"resources": [
+			"nav/component.css",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"images/d4.jpg",
+			"images/d3.jpg",
+			"images/d1.jpg",
+			"images/d2.jpg",
+			"images/home_1.png",
+			"images/home_2.png",
+			"images/home_4.png",
+			"images/home_3.png",
+			"css/app.css",
+			"compare/yz-hgz.html",
+			"js/jquery-3.1.1.js"
+		],
+		"refer": [
+			"confsplit/confsplit-main.html",
+			"coc/coc-main.html",
+			"qtrip/qtrip-main.html",
+			"environmental/env-arglist-main.html",
+			"compare/yz-hgz.html",
+			"compare/yz-coc.html",
+			"compare/yz-mp.html",
+			"compare/yz-yh.html",
+			"compare/yz-lbj.html",
+			"compare/yz-yzx.html",
+			"compare/yz-yzxjg.html",
+			"compare/yz-hb.html"
+		]
+	},
+	"nav/tab-three.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"css/app.css",
+			"fonts/mui.ttf",
+			"js/mui.pullToRefresh.js",
+			"images/search_icon.png",
+			"compare/yz-hgz.html",
+			"compare/yz-coc.html",
+			"js/jquery-3.1.1.js"
+		],
+		"refer": [
+			"compare/yz-hgz.html",
+			"compare/yz-coc.html",
+			"compare/yz-lbj.html",
+			"compare/yz-yzx.html",
+			"compare/yz-yh.html",
+			"compare/yz-mp.html",
+			"compare/yz-yzxjg.html",
+			"pagecode/page-list.html",
+			"pagecode/page-sub.html",
+			"compare/yz-hb.html",
+			"pagecode/pagecode-main.html"
+		]
+	},
+	"login/login.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"login/logo.png",
+			"fonts/mui.ttf",
+			"login/tx.jpg"
+		],
+		"refer": []
+	},
+	"guide/guide.html": {
+		"resources": [
+			"guide/tiyan.png",
+			"guide/bi1.jpg",
+			"guide/logo.png",
+			"guide/yuandian.png",
+			"guide/guts.png",
+			"guide/bi2.jpg",
+			"guide/bi.jpg",
+			"images/2.jpg",
+			"images/1.jpg",
+			"images/3.jpg"
+		],
+		"refer": []
+	},
+	"nav/tab-four.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"css/app.css",
+			"js/mui.js",
+			"fonts/mui.ttf",
+			"js/mui.zoom.js",
+			"css/preview_image.css",
+			"images/1.jpg",
+			"js/mui.previewimage.js"
+		],
+		"refer": [
+			"compare/yz-hgz.html",
+			"compare/yz-coc.html",
+			"compare/yz-yh.html",
+			"compare/yz-mp.html",
+			"compare/yz-lbj.html"
+		]
+	},
+	"nav/tab-one.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"images/home_2.png",
+			"images/2.jpg",
+			"images/home_1.png",
+			"css/app.css",
+			"images/home_4.png",
+			"images/1.jpg",
+			"images/home_3.png",
+			"images/3.jpg",
+			"compare/yz-hgz.html",
+			"compare/yz-yh.html",
+			"compare/yz-yzx.html",
+			"compare/yz-coc.html",
+			"js/jquery-3.1.1.js",
+			"images/d2.jpg",
+			"fonts/mui.ttf"
+		],
+		"refer": [
+			"compare/yz-hgz.html",
+			"compare/yz-yh.html",
+			"compare/yz-yzx.html",
+			"compare/yz-coc.html",
+			"compare/yz-mp.html",
+			"compare/yz-lbj.html",
+			"compare/yz-hb.html",
+			"compare/yz-yzxjg.html",
+			"nav/news.html"
+		]
+	},
+	"confsplit/confsplit-main.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"confsplit/confsplit-sub.html"
+		],
+		"refer": [
+			"confsplit/confsplit-sub.html"
+		]
+	},
+	"confsplit/confsplit-sub.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"fonts/mui.ttf",
+			"js/mui.pullToRefresh.js"
+		],
+		"refer": [
+			"confsplit/args-filing.html"
+		]
+	},
+	"coc/coc-sub.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/mui.pullToRefresh.js"
+		],
+		"refer": [
+			"coc/coc-args-main.html"
+		]
+	},
+	"coc/coc-main.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"coc/coc-sub.html"
+		],
+		"refer": [
+			"coc/coc-sub.html"
+		]
+	},
+	"coc/coc-args-main.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"coc/coc-args-sub.html"
+		],
+		"refer": [
+			"coc/coc-args-sub.html"
+		]
+	},
+	"coc/coc-args-sub.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/mui.pullToRefresh.js"
+		],
+		"refer": []
+	},
+	"qtrip/qtrip-main.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"qtrip/qtrip-sub.html"
+		],
+		"refer": [
+			"qtrip/qtrip-sub.html"
+		]
+	},
+	"qtrip/qtrip-sub.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/mui.pullToRefresh.js"
+		],
+		"refer": [
+			"qtrip/qtrip-args-main.html"
+		]
+	},
+	"qtrip/qtrip-args-sub.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/mui.pullToRefresh.js"
+		],
+		"refer": []
+	},
+	"qtrip/qtrip-args-main.html": {
+		"resources": [
+			"qtrip/qtrip-args-sub.html",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css"
+		],
+		"refer": [
+			"qtrip/qtrip-args-sub.html"
+		]
+	},
+	"confsplit/args-filing.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/mui.pullToRefresh.js",
+			"fonts/mui.ttf"
+		],
+		"refer": []
+	},
+	"environmental/args-attach.html": {
+		"resources": [
+			"js/mui.pullToRefresh.js",
+			"js/mui.min.js",
+			"css/mui.min.css"
+		],
+		"refer": []
+	},
+	"environmental/env-arglist-main.html": {
+		"resources": [
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"environmental/env-arglist-sub.html",
+			"js/mui.min.js"
+		],
+		"refer": [
+			"environmental/env-arglist-sub.html"
+		]
+	},
+	"environmental/env-arglist-sub.html": {
+		"resources": [
+			"js/mui.pullToRefresh.js",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css"
+		],
+		"refer": [
+			"environmental/args-attach.html"
+		]
+	},
+	"compare/yz-hgz.html": {
+		"resources": [
+			"js/mui.zoom.js",
+			"css/preview_image.css",
+			"js/mui.previewimage.js",
+			"js/mui.js",
+			"css/mui.css",
+			"css/app.css",
+			"fonts/mui.ttf",
+			"images/1.jpg",
+			"css/mui.min.css",
+			"nav/tab-main.html",
+			"js/jquery-3.1.1.js",
+			"js/exif.js",
+			"js/imageupload.js",
+			"images/4.jpg",
+			"js/ajaxupload.3.9.js",
+			"js/ajaxupload.3.6.js",
+			"js/mui.min.js"
+		],
+		"refer": [
+			"nav/tab-main.html"
+		]
+	},
+	"compare/yz-coc.html": {
+		"resources": [
+			"js/jquery-3.1.1.js",
+			"images/2.jpg",
+			"js/mui.zoom.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"images/1.jpg",
+			"css/mui.min.css",
+			"js/mui.previewimage.js",
+			"js/mui.js",
+			"fonts/mui.ttf",
+			"js/exif.js",
+			"js/mui.min.js",
+			"images/4.jpg"
+		]
+	},
+	"compare/yz-yh.html": {
+		"resources": [
+			"js/jquery-3.1.1.js",
+			"js/mui.zoom.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"fonts/mui.ttf",
+			"images/1.jpg",
+			"css/mui.min.css",
+			"js/mui.previewimage.js",
+			"js/mui.js",
+			"js/exif.js",
+			"js/mui.min.js",
+			"images/4.jpg"
+		]
+	},
+	"compare/yz-mp.html": {
+		"resources": [
+			"js/jquery-3.1.1.js",
+			"js/mui.zoom.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"fonts/mui.ttf",
+			"images/1.jpg",
+			"css/mui.min.css",
+			"js/mui.previewimage.js",
+			"js/mui.js",
+			"js/exif.js",
+			"images/4.jpg",
+			"js/mui.min.js"
+		]
+	},
+	"compare/yz-lbj.html": {
+		"resources": [
+			"images/1.jpg",
+			"js/jquery-3.1.1.js",
+			"js/exif.js",
+			"js/mui.zoom.js",
+			"js/mui.min.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/mui.previewimage.js",
+			"images/4.jpg",
+			"guide/bi.jpg"
+		],
+		"refer": [
+			"compare/yz_share_img.html"
+		]
+	},
+	"compare/yz-hb.html": {
+		"resources": [
+			"js/exif.js",
+			"js/jquery-3.1.1.js",
+			"js/mui.zoom.js",
+			"js/mui.min.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/mui.previewimage.js",
+			"images/4.jpg"
+		]
+	},
+	"compare/yz_share_img.html": {
+		"resources": [
+			"js/mui.pullToRefresh.js",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/jquery-3.1.1.js",
+			"css/app.css"
+		]
+	},
+	"compare/yz-yzx.html": {
+		"resources": [
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/mui.zoom.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"js/mui.previewimage.js",
+			"js/mui.js",
+			"js/exif.js",
+			"js/jquery-3.1.1.js",
+			"js/mui.min.js"
+		]
+	},
+	"compare/yz-yzxjg.html": {
+		"resources": [
+			"js/mui.pullToRefresh.js",
+			"js/jquery-3.1.1.js",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"css/app.css"
+		],
+		"refer": [
+			"look/yz-hgz.html",
+			"look/yz-lbj.html"
+		]
+	},
+	"look/yz-hgz.html": {
+		"resources": [
+			"js/exif.js",
+			"images/4.jpg",
+			"js/jquery-3.1.1.js",
+			"js/mui.zoom.js",
+			"js/mui.min.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/mui.previewimage.js"
+		],
+		"refer": [
+			"look/yz-coc.html",
+			"look/yz-yh.html",
+			"look/yz-mp.html",
+			"look/yz-lbj.html",
+			"look/yz-hb.html",
+			"look/yz-yzx.html"
+		]
+	},
+	"look/yz-lbj.html": {
+		"resources": [
+			"images/4.jpg",
+			"js/exif.js",
+			"js/jquery-3.1.1.js",
+			"js/mui.zoom.js",
+			"js/mui.min.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/mui.previewimage.js"
+		]
+	},
+	"pagecode/page-list.html": {
+		"refer": [
+			"pagecode/page-sub.html"
+		],
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"css/app.css"
+		]
+	},
+	"pagecode/page-sub.html": {
+		"resources": [
+			"js/mui.pullToRefresh.js",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"css/app.css"
+		]
+	},
+	"look/yz-coc.html": {
+		"resources": [
+			"images/4.jpg",
+			"js/exif.js",
+			"js/jquery-3.1.1.js",
+			"js/mui.zoom.js",
+			"js/mui.min.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/mui.previewimage.js"
+		]
+	},
+	"look/yz-mp.html": {
+		"resources": [
+			"images/4.jpg",
+			"js/exif.js",
+			"js/jquery-3.1.1.js",
+			"js/mui.zoom.js",
+			"js/mui.min.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/mui.previewimage.js"
+		]
+	},
+	"look/yz-yh.html": {
+		"resources": [
+			"images/4.jpg",
+			"js/exif.js",
+			"js/jquery-3.1.1.js",
+			"js/mui.zoom.js",
+			"js/mui.min.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/mui.previewimage.js"
+		]
+	},
+	"look/yz-hb.html": {
+		"resources": [
+			"images/4.jpg",
+			"js/exif.js",
+			"js/jquery-3.1.1.js",
+			"js/mui.zoom.js",
+			"js/mui.min.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/mui.previewimage.js"
+		]
+	},
+	"look/yz-yzx.html": {
+		"resources": [
+			"js/exif.js",
+			"js/jquery-3.1.1.js",
+			"js/mui.zoom.js",
+			"js/mui.min.js",
+			"css/app.css",
+			"css/preview_image.css",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/mui.previewimage.js"
+		]
+	},
+	"nav/news.html": {
+		"resources": [
+			"js/jquery-3.1.1.js",
+			"js/mui.min.js",
+			"css/app.css",
+			"fonts/mui.ttf",
+			"css/mui.min.css"
+		]
+	},
+	"pagecode/pagecode-main.html": {
+		"refer": [
+			"pagecode/pagecode-sub.html"
+		],
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css"
+		]
+	},
+	"pagecode/pagecode-sub.html": {
+		"resources": [
+			"js/mui.pullToRefresh.js",
+			"js/mui.min.js",
+			"css/mui.min.css"
+		],
+		"refer": [
+			"pagecode/uploader.html"
+		]
+	},
+	"pagecode/uploader.html": {
+		"resources": [
+			"css/common.css",
+			"js/mui.zoom.js",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/mui.previewimage.js"
+		],
+		"refer": [
+			"pagecode/page-sub.html"
+		]
+	}
+}

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/app.css" />
+	</head>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav z_header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">首页-公告</h1>
+			<span id="tuichu">退出登录</span>
+		</header>
+		<div class="mui-content" style="position: relative; width: 100%; height: 100%;">
+
+			<nav class="mui-bar mui-bar-tab">
+				<a id="defaultTab" class="mui-tab-item mui-active" href="tab-one.html">
+					<span class="mui-icon mui-icon-home"></span>
+					<span class="mui-tab-label">首页-公告</span>
+				</a>
+				<a class="mui-tab-item" href="tab-two.html">
+					<span class="mui-icon mui-icon-search"></span>
+					<!-- <span class="mui-badge">9</span>-->
+					<span class="mui-tab-label">数据查询</span>
+				</a>
+				<a class="mui-tab-item" href="tab-three.html">
+					<span class="mui-icon mui-icon-settings"></span>
+					<span class="mui-tab-label">配置拆分</span>
+				</a>
+				<a id="openMenu" class="mui-tab-item" href="javascript:void(0);">
+					<span class="mui-icon mui-icon-starhalf"></span>
+					<span class="mui-tab-label">数据一致性查询</span>
+				</a>
+			</nav>
+
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//mui初始化
+			mui.init({
+				preloadPages: [{
+					url: 'tab-one.html',
+					id: 'tab-one.html'
+				}, {
+					url: 'tab-two.html',
+					id: 'tab-two.html'
+				}, {
+					url: 'tab-three.html',
+					id: 'tab-three.html'
+				}, {
+					url: 'tab-four.html',
+					id: 'tab-four.html'
+				}]
+			});
+			var subpages = ['tab-one.html', 'tab-two.html', 'tab-three.html', 'tab-four.html'];
+			var subpage_style = {
+				top: '45px',
+				bottom: '51px',
+				scrollIndicator: 'horizontal'
+			};
+			var dl;
+			var aniShow = {};
+
+			//当前激活选项
+			var activeTab = subpages[0];
+			var title = document.getElementById("title");
+			//创建子页面，首个选项卡页面显示，其它均隐藏；
+			var back__first = null;
+			mui.plusReady(function() {
+				//锁定屏幕为横屏
+				plus.screen.lockOrientation("landscape-primary", "landscape-secondary");
+				mui.back = function() {
+					if(dl && !plus.storage.getItem('$sessionid')) {
+						// 判断登录页是否显示，如登录页显示，先关闭登录页
+						dl.close();
+						// 因为点击其他导航页 后显示登录，取消登录后，需要重新显示新闻页
+						goNews();
+						dl = null;
+					} else {
+						// 操作是否退出程序
+						if(!back__first) {
+							back__first = new Date().getTime();
+							mui.toast('再按一次退出应用');
+							setTimeout(function() {
+								back__first = null;
+							}, 2000);
+						} else {
+							if(new Date().getTime() - back__first < 2000) {
+								plus.runtime.quit();
+							}
+						}
+					}
+				};
+				// 检查是否首次启动  来确定是否显示引导页
+				//				var showGuide = plus.storage.getItem("lauchFlag");
+				//				if(showGuide == plus.runtime.version) {} else {
+				//					mui.openWindow({
+				//						id: 'guide',
+				//						url: '../guide/guide.html',
+				//						show: {
+				//							aniShow: 'none'
+				//						},
+				//						waiting: {
+				//							autoShow: false
+				//						}
+				//					});
+				//				}
+
+				var self = plus.webview.currentWebview();
+				for(var i = 0; i < 3; i++) {
+					var temp = {};
+					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
+					if(i > 0) {
+						sub.hide();
+					} else {
+						temp[subpages[i]] = "true";
+						mui.extend(aniShow, temp);
+					}
+					self.append(sub);
+				}
+
+				//				window.addEventListener('out', function(event) {
+				//					console.log("进到tab-main了");
+				//					goNews();
+				//					var self = plus.webview.currentWebview();
+				//					dl = plus.webview.create('../login/login.html', 'login', {
+				//						top: '0px',
+				//						bottom: '0px',
+				//						scrollIndicator: 'none'
+				//					}, {
+				//						index: 'logout'
+				//					});
+				//					self.append(dl);
+				//				});
+				if(!plus.storage.getItem('$sessionid')) {
+					var self = plus.webview.currentWebview();
+					var dl = plus.webview.create('../login/login.html', 'login', {
+						top: '0px',
+						bottom: '0px',
+						scrollIndicator: 'none'
+					});
+					self.append(dl);
+				}
+
+				//选项卡点击事件
+				mui('.mui-bar-tab').on('tap', 'a', function(e) {
+					var tabOne = plus.webview.getWebviewById('tab-one.html');
+					var tabtwo = plus.webview.getWebviewById('tab-two.html');
+					var tabthree = plus.webview.getWebviewById('tab-three.html');
+					var targetTab = this.getAttribute('href');
+					if(targetTab == activeTab) {
+						return;
+					}
+					//关闭弹出菜单
+					mui.fire(tabOne, 'closeMenu', {
+						name: "fire_1"
+					});
+					mui.fire(tabtwo, 'closeMenu', {
+						name: "fire_2"
+					});
+					mui.fire(tabthree, 'closeMenu', {
+						name: "fire_3"
+					});
+
+					//触发自定义事件 打开其他webwiew的底部弹出菜单
+					if(targetTab != 'javascript:void(0);') {
+						//更换标题
+						title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
+					} else if(targetTab == 'javascript:void(0);') {
+
+						if(title.innerHTML == "首页-公告") {
+							//							console.log("当前页面URL："+plus.webview.currentWebview().getURL());
+							mui.fire(tabOne, 'openMenu', {
+								name: "fire_1"
+							});
+						} else if(title.innerHTML == "数据查询") {
+							mui.fire(tabtwo, 'openMenu', {
+								name: "fire_2"
+							});
+						} else if(title.innerHTML == "配置拆分") {
+							mui.fire(tabthree, 'openMenu', {
+								name: "fire_3"
+							});
+						}
+						return;
+					}
+
+					//显示目标选项卡
+					//若为iOS平台或非首次显示，则直接显示
+					if(mui.os.ios || aniShow[targetTab]) {
+						//每次 切换 个人中心  刷新一下
+						//					if(targetTab == 'tab-person.html'){
+						//						console.log("22");
+						//						plus.webview.getWebviewById('tab-person.html').reload();
+						//					}
+						plus.webview.show(targetTab);
+					} else {
+						//否则，使用fade-in动画，且保存变量
+						var temp = {};
+						temp[targetTab] = "true";
+						mui.extend(aniShow, temp);
+						//每次 切换 个人中心  刷新一下
+						//					if(targetTab == 'tab-person.html'){
+						//						plus.webview.getWebviewById('tab-person.html').reload();
+						//					}
+						plus.webview.show(targetTab, "fade-in", 300);
+					}
+					//隐藏当前;
+					plus.webview.hide(activeTab);
+					//更改当前活跃的选项卡
+					activeTab = targetTab;
+				});
+				//自定义事件，模拟点击“首页选项卡”
+				document.addEventListener('gohome', function() {
+					goNews();
+				});
+
+				var goNews = function() {
+					var defaultTab = document.getElementById("defaultTab");
+					//模拟首页点击
+					mui.trigger(defaultTab, 'tap');
+					//切换选项卡高亮
+					var current = document.querySelector(".mui-bar-tab>.mui-tab-item.mui-active");
+					if(defaultTab !== current) {
+						current.classList.remove('mui-active');
+						defaultTab.classList.add('mui-active');
+					}
+				}
+
+				document.getElementById('tuichu').onclick = function() {
+					mui.ajax(imgpath + '/jeesite/a/logout', {
+						type: 'get',
+						success: function() {
+							mui.toast('退出成功')
+							plus.storage.clear();
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							console.log(type);
+						}
+					})
+					mui.openWindow({
+						url: '../login/login.html',
+						id: '../login/login.html',
+						styles: {
+							top: 0,
+							bottom: 0
+						},
+						extras: {
+
+						},
+						createNew: false,
+						waiting: {
+							autoShow: true,
+						}
+					})
+				}
+			});
+		</script>
+	</body>
+
+</html>

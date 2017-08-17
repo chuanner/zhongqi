@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="background: #4092c4;">
+			<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+				<div id="divnav" class="mui-scroll" style="width: 100%;font-size: 16px;">
+					<!--<a class="mui-control-item mui-active" href="#item1mobile" style="width: 45%;">
+							组织会议
+						</a>
+						<a class="mui-control-item" href="#item2mobile" style="width: 45%;">
+							组织活动
+						</a>-->
+				</div>
+			</div>
+		</header>
+
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+				plus.screen.lockOrientation("landscape-primary", "landscape-secondary");
+				mui.init();
+				
+				var firstwvid;
+				var wv = plus.webview.currentWebview();
+				var wvid = wv.id;
+				var data = wvid.split("-fudd-");
+
+				var csid = data[0];
+				var anid = data[1];
+				var editioncode = data[2];
+				
+				var listUrl = urlpath + '/a/configuration_rule/tcConfigurationRule/apppagecode?anid=' + anid + "&csid=" + csid;
+				console.log(listUrl);
+				mui.getJSON(listUrl, {}, function(data) {
+					console.log(JSON.stringify(data));
+					var len = data.rDate.length;
+					console.log(len);
+					console.log(data.rDate[0]);
+					var diva = document.getElementById("divnav");
+					var w = parseInt(100 / len) - 3;
+					for(var i = 0; i < len; i++) {
+						var a = document.createElement('a');
+						if(i == 0) {
+							a.className = "mui-control-item mui-active mui-ellipsis";
+							firstwvid = data.rDate[i] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
+						} else {
+							a.className = "mui-control-item mui-ellipsis";
+						}
+						a.href = "#item" + (i + 1) + "mobile";
+						a.id = data.rDate[i] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
+						
+						console.log(a.id);
+						a.setAttribute("style", "width: " + w + "%;");
+						a.innerHTML = data.rDate[i];
+						a.addEventListener('tap', function() {
+							console.log("sub id = "+this.getAttribute("id"));
+							mui.openWindow({
+								id: this.getAttribute("id"),
+								url: 'pagecode-sub.html',
+								styles: {
+									top: '45px',
+									popGesture: 'close'
+								},
+								show: {
+									aniShow: 'slide-in-right'
+								},
+								waiting: {
+									autoShow: false
+								}
+							});
+						});
+						diva.appendChild(a);
+					}
+					console.log("sub id = "+firstwvid);
+					mui.openWindow({
+						id: firstwvid,
+						url: 'pagecode-sub.html',
+						styles: {
+							top: '45px',
+							popGesture: 'close'
+						},
+						show: {
+							aniShow: 'slide-in-right'
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
+
+				});
+			});
+		</script>
+	</body>
+
+</html>

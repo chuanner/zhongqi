@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper mui-card">
+			<div class="mui-scroll">
+				<!--private String fuprnum;//参数编号
+				private String fuprname;//对应接口参数名
+				private String funame;//参数名称
+				private String fuvalue;//企业参数编号
+				private String fuvalue;//参数值-->
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" style="width: 100%;">
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">序号</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">参数编号</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">参数名</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">参数值</span>
+					</li>
+
+					<!--<li class="mui-table-view-cell">
+						<span style="float: left;width: 30%;">培训标题</span>
+						<p id="title" style="float: left;"></p>
+					</li>
+					<li class="mui-table-view-divider"></li>
+					<li class="mui-table-view-cell">
+						<span style="float: left;width: 30%;">培训内容</span>
+						<p id="content" style="float: left;"></p>
+					</li>
+					<li class="mui-table-view-divider"></li>
+					<li id="path" class="mui-table-view-cell">
+						<div class="mui-navigate-right">
+							<span style="float: left;width: 30%;">培训视频</span>
+							<p style="float: left;color: green;">点击开始学习</p>
+						</div>
+					</li>-->
+				</ul>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script type="text/javascript">
+			
+			mui.plusReady(function() {
+				var page = 1;
+				plus.screen.lockOrientation("landscape-primary");
+				var webview = plus.webview.currentWebview();
+				var id = webview.subid;
+				console.log(id);
+				mui.init({
+					pullRefresh: {
+						container: '#pullrefresh',
+						down: {
+//							auto: true, //可选,默认false.首次加载自动下拉刷新一次
+							contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+							contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+							contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+							callback: pulldownRefresh
+						},
+						up: {
+							auto: true,
+							contentrefresh: "数据加载中...",
+							contentnomore: "没有更多数据了",
+							callback: pullupRefresh
+						}
+					}
+				});
+
+				/**
+				 * 下拉刷新具体业务实现
+				 */
+				function pulldownRefresh() {
+					console.log("下拉刷新");
+					setTimeout(function() {
+						page = 1;
+						//http://114.115.212.225:8080/jeesite/a/BaseDataCheck/Announcement/APPANform?id=f6a88adb5bc547fe98104c5937da7a82&&pageNo=1&&pageSize=3
+						var url = urlpath + '/a/BaseDataCheck/Fuel/APPfuelform?id=' + id + '&pageNo=' + page + '&pageSize=' + pageSize;
+						console.log(url);
+						mui.getJSON(url, {}, function(data) {
+							console.log(JSON.stringify(data));
+							var ul = document.querySelector('.mui-table-view');
+							var len = ul.childElementCount;
+							console.log(len);
+							console.log(ul.childNodes.length);
+							//下拉刷新前清空子ul节点
+							for(var i = ul.childNodes.length - 1; i >= 2; i--) {
+								ul.removeChild(ul.childNodes[i]);
+							}
+							console.log(ul.childNodes.length);
+							if(data.rDate.length != '0') {
+								ul.appendChild(createFragment(ul, pageSize, data));
+							}
+							mui('#pullrefresh').pullRefresh().refresh(true);
+							mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+							page = 2;
+						});
+					}, 1500);
+				}
+				/**
+				 * 上拉加载具体业务实现
+				 */
+				function pullupRefresh() {
+					setTimeout(function() {
+						var url = urlpath + '/a/BaseDataCheck/Fuel/APPfuelform?id=' + id + '&pageNo=' + page + '&pageSize=' + pageSize;
+						console.log(url);
+						mui.getJSON(url, {}, function(data) {
+							var ul = document.querySelector('.mui-table-view');
+							var len = ul.childElementCount;
+							if(page <= data.rPageLast) {
+								ul.appendChild(createFragment(ul, pageSize, data));
+								if(page == data.rPageLast) {
+									mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+								}
+							} else {
+								mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+							}
+							page++;
+						});
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+					}, 1500);
+				}
+
+				var createFragment = function(ul, count, data) {
+					var fragment = document.createDocumentFragment();
+					var li;
+					var jg, len;
+					len = data.rDate.length;
+					if(len < count) {
+						count = len;
+					}
+					for(var i = 0; i < count; i++) {
+						li = document.createElement('li');
+						li.id = data.rDate[i].id
+						li.className = 'mui-table-view-cell';
+						li.innerHTML =
+							'<span id="order" style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + parseInt(pageSize * (page - 1) + i + 1) + '</span>' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">' + data.rDate[i].fuprnum + '</span>' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">' + data.rDate[i].funame + '</span>' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">' + data.rDate[i].fuvalue + '</span>';
+						fragment.appendChild(li);
+					}
+					return fragment;
+				};
+			});
+		</script>
+	</body>
+
+</html>

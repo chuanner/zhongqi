@@ -1,0 +1,351 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mys-li {
+				overflow-x: scroll;
+				white-space: nowrap;
+				overflow: hidden;
+				width: -webkit-max-content;
+			}
+			
+			input {
+				display: inline-block;
+				height: 35px;
+				border: 1px solid #DBDBDB !important;
+				border-radius: 3px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">一致性比对结果</h1>
+		</header>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper mui-card">
+			<div class="mui-scroll">
+
+				<div class=" z_btn_1" style="width: 100%;padding-left: 25px; margin-top: 10px;">
+					项目名称：<input id="xmmc" class="mui-col-sm-2" /> 版本号：
+					<input id="bbh" class="mui-col-sm-2" /> 车辆型号：
+					<input id="clxh" class="mui-col-sm-2" /> PackageCode：
+					<input id="pkc" class="mui-col-sm-1" />
+					<button style="margin-left: 50px;" type="button" id="search" class="mui-btn mui-btn-blue mui-btn-outlined mui-icon mui-icon-search">查询</button>
+					<!--<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined ">取消</button>
+					<button id="tj" type="button" class="mui-btn mui-btn-blue mui-btn-outlined ">确定</button>-->
+
+				</div>
+				<ul class="mui-table-view">
+					<li id="aaa" class="mui-table-view-cell" style="width: 100%;float: left;">
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">  </span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">项目名称</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">车辆型号</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">版本号</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">packagecode</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">操作人</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">状态</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">查车时间</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">操作</span>
+
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script type="text/javascript" src="../js/jquery-3.1.1.js"></script>
+		<script type="text/javascript">
+			var page = 1;
+			mui.plusReady(function() {
+				plus.screen.lockOrientation("landscape-primary");
+				var self = plus.webview.currentWebview();
+				var projectname = self.projectname;
+				var anmodel = self.anmodel;
+				var editioncode = self.editioncode;
+				var packagecode = self.packagecode;
+				var trueFileName = self.trueFileName;
+				var comtype = self.comtype;
+
+				mui.init({
+					pullRefresh: {
+						container: '#pullrefresh',
+						down: {
+							//						auto: true, //可选,默认false.首次加载自动下拉刷新一次
+							contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+							contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+							contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+							callback: pulldownRefresh
+						},
+						up: {
+							auto: true,
+							contentrefresh: "数据加载中...",
+							contentnomore: "没有更多数据了",
+							callback: pullupRefresh
+						}
+					}
+				});
+
+				/**
+				 * 下拉刷新具体业务实现
+				 */
+				function pulldownRefresh() {
+					console.log("下拉刷新");
+					setTimeout(function() {
+						page = 1;
+						var url = urlpath + '/a/dataCompare/bdList/APPListResult?pageNo=' + page + '&pageSize=' + pageSize;
+						console.log(url);
+						mui.getJSON(url, {}, function(data) {
+							console.log(JSON.stringify(data));
+							var ul = document.querySelector('.mui-table-view');
+							var len = ul.childElementCount;
+							console.log(len);
+							console.log(ul.childNodes.length);
+							//下拉刷新前清空子ul节点
+							for(var i = ul.childNodes.length - 1; i >= 2; i--) {
+								ul.removeChild(ul.childNodes[i]);
+							}
+							console.log(ul.childNodes.length);
+							if(data.rDate.length != '0') {
+								ul.appendChild(createFragment(ul, pageSize, data));
+							}
+							mui('#pullrefresh').pullRefresh().refresh(true);
+							mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+							page = 2;
+						});
+					}, 1500);
+				}
+				/**
+				 * 上拉加载具体业务实现
+				 */
+				function pullupRefresh() {
+					setTimeout(function() {
+						var url = urlpath + '/a/dataCompare/bdList/APPListResult?pageNo=' + page + '&pageSize=' + pageSize;
+						console.log(url);
+						mui.getJSON(url, {}, function(data) {
+							var ul = document.querySelector('.mui-table-view');
+							var len = ul.childElementCount;
+							if(page <= data.rPageLast) {
+								ul.appendChild(createFragment(ul, pageSize, data));
+								if(page == data.rPageLast) {
+									mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+								}
+							} else {
+								mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+							}
+							page++;
+						});
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+					}, 1500);
+
+				}
+
+				function shanxuan() {
+
+					var projname = $('#xmmc').val();
+					var anmodel = $('#clxh').val();
+					var editioncode = $('#bbh').val();
+					var pagecode = $('#pkc').val();
+					setTimeout(function() {
+						var url = urlpath + '/a/dataCompare/bdList/APPListResult?projname=' + projname + '&anmodel=' + anmodel + '&editioncode=' + editioncode + '&pagecode=' + pagecode + '&pageNo=' + page + '&pageSize=' + pageSize;
+						mui.getJSON(url, {}, function(data) {
+							var ul = document.querySelector('.mui-table-view');
+							var len = ul.childElementCount;
+							console.log(data.rPageLast);
+							for(var i = ul.childNodes.length - 1; i >= 2; i--) {
+								ul.removeChild(ul.childNodes[i]);
+							}
+
+							ul.appendChild(createFragment(ul, pageSize, data));
+							mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+
+							page++;
+						});
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+					}, 1500);
+
+				}
+
+				$('#search').on('click', function() {
+
+					shanxuan();
+				})
+
+				function add0(m) {
+					return m < 10 ? '0' + m : m
+				}
+
+				function format(shijianchuo) {
+					//shijianchuo是整数，否则要parseInt转换
+					var time = new Date(shijianchuo);
+					var y = time.getFullYear();
+					var m = time.getMonth() + 1;
+					var d = time.getDate();
+					var h = time.getHours();
+					var mm = time.getMinutes();
+					var s = time.getSeconds();
+					return y + '-' + add0(m) + '-' + add0(d) + ' ' + add0(h) + ':' + add0(mm) + ':' + add0(s);
+				}
+
+				var createFragment = function(ul, count, data) {
+					var fragment = document.createDocumentFragment();
+					var li;
+					var jg, len;
+					len = data.rDate.length
+					if(len < count) {
+						count = len;
+					}
+					console.log(len);
+					for(var i = 0; i < count; i++) {
+						var stat = '';
+						if(data.rDate[i].state == null) {
+							stat = '未查车';
+						}
+						if(data.rDate[i].state == '1') {
+							stat = '查车中';
+						}
+						if(data.rDate[i].state == '2') {
+							stat = '已查车';
+						}
+
+						var time = format(data.rDate[i].checkdate);
+
+						li = document.createElement('li');
+						li.id = data.rDate[i].id
+						li.className = 'mui-table-view-cell';
+						li.innerHTML =
+							'<span id="order" style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis"><input class = "check_id" type="checkbox" name="" id="tc' + data.rDate[i].id + '" value="' + data.rDate[i].id + '" /></span>' +
+							'<span  style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis a_1">' + data.rDate[i].projname + '</span>' +
+							'<span  style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis a_2">' + data.rDate[i].anmodel + '</span>' +
+							'<span  style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis a_3">' + data.rDate[i].editioncode + '</span>' +
+							'<span  style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis a_4">' + data.rDate[i].pagecode + '</span>' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].operUserName + '</span>' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + stat + '</span>' +
+							'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + time + '</span>' +
+							'<button onclick = "open_zs(this)" id="zs" type="button" style="margin-right:80px" class="mui-btn mui-btn-blue mui-btn-outlined ">证书</button>' +
+							'<button onclick = "open_lbj(this)" id="lbj" type="button" class="mui-btn mui-btn-blue mui-btn-outlined ">零部件</button>';
+
+						fragment.appendChild(li);
+					}
+					return fragment;
+				};
+
+				//确定 提交选中的行的id
+				$('#tj').on('click', function() {
+					var ids = "";
+					$(".check_id").each(function(i, e) {
+						if($(e).is(":checked")) {
+							if(ids == '') {
+								ids = $(e).attr('id');
+							} else {
+								ids = ids + ',' + $(e).attr('id');
+							}
+
+						}
+					})
+					console.log(ids);
+
+					mui.ajax(urlpath + '/a/dataCompare/bdCom/sharePic', {
+						data: {
+							pcodes: ids,
+							trueFileName: trueFileName,
+							comtype: comtype
+						},
+						type: "post",
+						success: function(data) {
+							mui.toast(data.msg);
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+						}
+					})
+
+				})
+
+			});
+
+			function open_zs(a) {
+				console.log(a.id);
+				var projname = $(a).parent().find('.a_1').text();
+				var anmodel = $(a).parent().find('.a_2').text();
+				var editioncode = $(a).parent().find('.a_3').text();
+				var pagecode = $(a).parent().find('.a_4').text();
+				console.log(projname);
+
+				mui.openWindow({
+					url: '../look/yz-hgz.html',
+					id: '../look/yz-hgz.html',
+					styles: {
+						top: 0, //新页面顶部位置
+						bottom: 0, //新页面底部位置						
+					},
+					extras: {
+						projname: projname,
+						anmodel: anmodel,
+						editioncode: editioncode,
+						pagecode: pagecode
+
+					},
+					createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true						
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...', //等待对话框上显示的提示内容
+						options: {
+
+						}
+					}
+				})
+				//关闭弹出菜单
+
+			}
+
+			function open_lbj(a) {
+				console.log("dddd");
+				var projname = $(a).parent().find('.a_1').text();
+				var anmodel = $(a).parent().find('.a_2').text();
+				var editioncode = $(a).parent().find('.a_3').text();
+				var pagecode = $(a).parent().find('.a_4').text();
+				console.log(projname);
+				console.log(anmodel);
+				console.log(editioncode);
+				console.log(pagecode);
+				mui.openWindow({
+					url: '../look/yz-lbj.html',
+					id: '../look/yz-lbj.html',
+					styles: {
+						top: 0, //新页面顶部位置
+						bottom: 0, //新页面底部位置						
+					},
+					extras: {
+						projname: projname,
+						anmodel: anmodel,
+						editioncode: editioncode,
+						pagecode: pagecode
+					},
+					createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true						
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...', //等待对话框上显示的提示内容
+						options: {
+
+						}
+					}
+				})
+				//关闭弹出菜单
+
+			}
+		</script>
+	</body>
+
+</html>

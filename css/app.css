@@ -1,0 +1,156 @@
+html,
+body {
+	background-color: #fff;
+}
+
+select {
+	border: 1px solid #DBDBDB !important;
+}
+
+.mui-content {
+	/*width: 100%;
+	height: 100%;*/
+}
+
+.z_header>h1 {
+	font-size: 20px;
+	color: #4092c4;
+}
+
+.z_header {
+	height: 40px;
+}
+
+.z_c_con {
+	margin-top: 50px;
+}
+
+
+/*登录注册*/
+
+
+/*图像识别*/
+
+.z_p_1 {
+	width: 20%;
+	float: left;
+	height: 35px;
+	line-height: 35px;
+}
+
+.z_sl_1 {
+	width: 78%;
+	height: 35px;
+	float: right;
+	padding-left: 10px;
+	font-size: 14px;
+	padding: 0 0 0 10px;
+	margin: 0;
+}
+
+.z_padd_5 {
+	height: 40px;
+	padding-right: 2%;
+}
+
+.z_btn_1 button {
+	margin-top: 3px;
+	margin-left: 2%;
+	margin-right: 2%;
+}
+
+.mui-card .mui-control-content {
+	padding: 10px;
+}
+
+.mui-control-content {
+	/*height: 210px;*/
+}
+
+.z_btn_2 {
+	text-align: center;
+}
+
+.z_btn_2 button {
+	margin-top: 20px;
+	height: 25px;
+	padding: 0 5px;
+	line-height: 25px;
+	margin-right: 50px;
+}
+
+.z_tab_l {
+	float: left;
+	width: 50%;
+	height: 480px;
+	padding-left: 10px;
+	padding-right: 10px;
+	text-align: center;
+	overflow: hidden;
+	border-right: 1px dashed #ccc;
+}
+
+.z_tab_r {
+	float: left;
+	width: 50%;
+	height: 480px;
+	overflow: scroll;
+	padding-left: 10px;
+}
+
+.z_camera {
+	width: 100%;
+	height: 500px;
+	border: 1px solid #dbdbdb;
+	padding: 10px;
+	padding-left: 0;
+}
+
+.z_camera>.z_tab_l img {
+	display: block;
+	/*width: 100%;*/
+	height: 100%;
+	margin: 0 auto;
+}
+
+.z_result {
+	width: 100%;
+	height: 450px;
+	overflow: scroll;
+	border: 1px solid #dbdbdb;
+	padding: 10px;
+}
+
+.mui-segmented-control .mui-control-item.mui-active {
+	color: #fff;
+	background-color: #4092c4;
+}
+
+
+/*右下角弹出菜单*/
+
+.mui-popover {
+	height: 350px;
+	right: 10px;
+	bottom: 20px;
+}
+
+
+/*触发菜单的隐藏按钮*/
+
+.openMenu_a {
+	width: 30px;
+	height: 30px;
+	position: fixed;
+	right: 150px;
+	bottom: -30px;
+}
+
+#tuichu{
+	color:cornflowerblue;
+	float: right;
+	display: block;
+	height: 40px;
+	line-height: 40px;
+	padding: 0 10px;
+}

@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mys-li {
+				overflow-x: scroll;
+				white-space: nowrap;
+				overflow: hidden;
+				width: -webkit-max-content;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper mui-card">
+			<div class="mui-scroll">
+				<!--public String productComp;//生产企业
+			    public String currencyName;//通用名称
+			    public String veModel;//车辆型号
+			    public String veType;//车辆种类
+			    public String displacement;//排量
+			    public String ratedPower;//额定功率
+			    public String transmission;//变速器
+			    public String fuleType;//燃料种类
+			    public String urbanFuelConsumption;//市区工况油耗
+			    public String suburbFuelConsumption;//市郊工况油耗
+			    public String generalFuelConsumption;//综合工况油耗
+				public String releaseData;//公告日期-->
+				<div class="" style="width: 100%;padding-left: 25px;">
+					车辆型号：<input id="qmodel" class="mui-col-sm-3" />
+					<button id="cbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-search mui-col-sm-2">
+		                                        查询
+		        	</button>
+					<button id="qbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-clear mui-col-sm-2">
+		                                         清空
+		        	</button>
+				</div>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell" style="width: 100%;float: left;">
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">生产企业</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">通用名称</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">车辆型号</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">车辆种类</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">排量</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">额定功率</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">变速器</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">燃料种类</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">市区工况油耗</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">市郊工况油耗</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">综合工况油耗</span>
+						<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">公告日期</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script type="text/javascript">
+			var page = 1;
+			mui.plusReady(function() {
+				plus.screen.lockOrientation("landscape-primary");
+			});
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						//						auto: true, //可选,默认false.首次加载自动下拉刷新一次
+						contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+						contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+						contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+						callback: pulldownRefresh
+					},
+					up: {
+						auto: true,
+						contentrefresh: "数据加载中...",
+						contentnomore: "没有更多数据了",
+						callback: pullupRefresh
+					}
+				}
+			});
+
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				console.log("下拉刷新");
+				var veModel = document.getElementById("qmodel").value;
+				setTimeout(function() {
+					page = 1;
+					var url = urlpath + '/a/BaseDataCheck/Fuel/APPlist?veModel='+veModel+'&pageNo=' + page + '&pageSize=' + pageSize;
+					console.log(url);
+					mui.getJSON(url, {}, function(data) {
+						console.log(JSON.stringify(data));
+						var ul = document.querySelector('.mui-table-view');
+						var len = ul.childElementCount;
+						console.log(len);
+						console.log(ul.childNodes.length);
+						//下拉刷新前清空子ul节点
+						for(var i = ul.childNodes.length - 1; i >= 2; i--) {
+							ul.removeChild(ul.childNodes[i]);
+						}
+						console.log(ul.childNodes.length);
+						if(data.rDate.length != '0') {
+							ul.appendChild(createFragment(ul, pageSize, data));
+						}
+						mui('#pullrefresh').pullRefresh().refresh(true);
+						mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+						page = 2;
+					});
+				}, 1500);
+			}
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				var veModel = document.getElementById("qmodel").value;
+				setTimeout(function() {
+					var url = urlpath + '/a/BaseDataCheck/Fuel/APPlist?veModel='+veModel+'&pageNo=' + page + '&pageSize=' + pageSize;
+//					var url = urlpath + '/a/BaseDataCheck/Fuel/APPlist?pageNo=' + page + '&pageSize=' + pageSize;
+					console.log(url);
+					mui.getJSON(url, {}, function(data) {
+						var ul = document.querySelector('.mui-table-view');
+						var len = ul.childElementCount;
+						if(page <= data.rPageLast) {
+							ul.appendChild(createFragment(ul, pageSize, data));
+							if(page == data.rPageLast) {
+								mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+							}
+						} else {
+							mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+						}
+						page++;
+					});
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+				}, 1500);
+			}
+
+			var createFragment = function(ul, count, data) {
+				var fragment = document.createDocumentFragment();
+				var li;
+				var jg, len;
+				len = data.rDate.length
+				if(len < count) {
+					count = len;
+				}
+				for(var i = 0; i < count; i++) {
+					li = document.createElement('li');
+					li.style.width = "100%";
+					li.id = data.rDate[i].id;
+					li.className = 'mui-table-view-cell mys-li';
+					li.innerHTML =
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].productComp + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].currencyName + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].veModel + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].veType + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].displacement + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].ratedPower + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].transmission + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].fuleType + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].urbanFuelConsumption + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].suburbFuelConsumption + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].generalFuelConsumption + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].releaseData + '</span>';
+					li.addEventListener('tap', function() {
+						mui.openWindow({
+							id: this.getAttribute("id"),
+							url: 'qtrip-args-main.html',
+							styles: {
+								popGesture: 'close'
+							},
+							show: {
+								aniShow: 'slide-in-right'
+							},
+							waiting: {
+								autoShow: false
+							}
+						});
+					});
+					fragment.appendChild(li);
+				}
+				return fragment;
+			};
+			// 清空按钮操作
+			document.getElementById("qbtn").addEventListener('tap', function() {
+				document.getElementById("qmodel").value = '';
+				pulldownRefresh();
+			});
+			// 查询按钮操作
+			document.getElementById("cbtn").addEventListener('tap', function() {
+				pulldownRefresh();
+			});
+		</script>
+	</body>
+
+</html>

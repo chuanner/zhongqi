@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>图像识别</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../css/preview_image.css" />
+		<style type="text/css">
+			.z_table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+			
+			.z_table th,
+			.z_table td {
+				border: 1px solid #dbdbdb;
+				font-size: 12px;
+				color: #666;
+				font-weight: 400;
+				text-align: center;
+				height: 40px;
+			}
+			
+			#z_textarea {
+				display: block;
+				height: 100%;
+				font-size: 14px;
+				color: #666;
+				border: none;
+				background: rgba(0, 0, 0, 0);
+			}
+			
+			#canvas {
+				display: block;
+				width: 100%;
+				height: 100%;
+				background: red;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav z_c_header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">零部件数据对比</h1>
+		</header>
+
+		<div class=" mui-content-padded z_c_con" id="yz_hgz">
+			<div class="mui-row ">
+				<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">项目名称：</p>
+					<select id="sel_pro_name" class="mui-btn mui-btn-block z_sl_1 " name="" disabled="disabled">
+						<option value=""></option>
+					</select>
+				</div>
+				<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">版本号：</p>
+					<select id="sel_pro_ban" class="mui-btn mui-btn-block z_sl_1 " name="" disabled="disabled">
+						<option value=""></option>
+					</select>
+				</div>
+				<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">车辆型号：</p>
+					<select id="sel_pro_xh" class="mui-btn mui-btn-block z_sl_1 " name="" disabled="disabled">
+						<option value=""></option>
+					</select>
+				</div>
+				<div class="mui-col-sm-6 mui-col-xs-6 z_padd_5">
+					<p class="z_p_1">PackageCode：</p>
+					<select id="sel_pro_code" class="mui-btn mui-btn-block z_sl_1 " name="" disabled="disabled">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+
+			<div class="mui-button-row z_btn_1">
+				<div class="mui-col-sm-4 mui-col-xs-4 " style="float: left;">
+					<p class="z_p_1">关键零部件：</p>
+					<select id="sel_lbj" onchange="selectCom()" class="mui-btn mui-btn-block z_sl_1 " style="width: 200px; float: left; margin-left: 50px;">
+						<option value="发动机">发动机</option>
+						<option value="ECU">ECU</option>
+						<option value="EGR">EGR</option>
+						<option value="催化转化器">催化转化器</option>
+						<option value="排气消声器（前）">排气消声器（前）</option>
+						<option value="排气消声器（中）">排气消声器（中）</option>
+						<option value="排气消声器（后）">排气消声器（后）</option>
+						<option value="氧传感器（前）">氧传感器（前）</option>
+						<option value="氧传感器（后）">氧传感器（后）</option>
+						<option value="增压器">增压器</option>
+						<option value="燃油蒸发控制装置">燃油蒸发控制装置</option>
+					</select>
+				</div>
+
+			</div>
+
+			<div style="padding: 10px 10px;">
+				<div id="segmentedControl" class="mui-segmented-control">
+					<a class="mui-control-item mui-active" href="#item1">
+						图像识别区
+					</a>
+					<a class="mui-control-item" href="#item2">
+						数据一致性对比
+					</a>
+				</div>
+			</div>
+			<div>
+				<div id="item1" class="mui-control-content mui-active mui-content-padded">
+					<div class="z_camera">
+						<div class="z_tab_l">
+							<img id="local_img" src="../images/4.jpg" data-preview-src="" data-preview-group="1" />
+						</div>
+						<div class="z_tab_r">
+							<!--隐藏域-->
+							<input id="bdid" type="hidden" />
+							<input id="result" type="hidden" />
+							<input id="hgzRemark" type="hidden" />
+							<input id="trueFileName" type="hidden" />
+							<input type="hidden" id="textOrImg" />
+							<div id="textCompare">
+								<table class="z_table" border="1" cellspacing="0" cellpadding="0">
+									<tr>
+										<label class="z_label">打刻标识1：</label>
+										<select disabled='disabled' id="iden1" onchange="selectIden1()" style="width: 450px;">
+											<option value=""></option>
+										</select>
+										<br />
+									</tr>
+									<tr>
+										<label class="z_label">编辑标识1：</label>
+										<input disabled='disabled' type="text" id="" value="" style="width: 450px;" />
+										<br />
+									</tr>
+									<tr>
+										<label class="z_label">打刻标识2：</label>
+										<select disabled='disabled' id="iden2" onchange="selectIden2()" style="width: 450px;">
+											<option value=""></option>
+										</select>
+										<br />
+									</tr>
+									<tr>
+										<label class="z_label">编辑标识2：</label>
+										<input disabled='disabled' type="text" id="" value="" style="width: 450px;" />
+										<br />
+									</tr>
+									<tr>
+										<label class="z_label">待比对的值：</label>
+										<input disabled='disabled' type="text" id="textCom" value="" disabled="disabled" style="width: 450px;" />
+										<br />
+									</tr>
+								</table>
+							</div>
+							<div id="imgCompare" style="width: 100%;height: 100%; display: none;">
+								<div>
+									<input disabled='disabled' type="radio" name="imgResult" value="1" />比对一致
+									<input disabled='disabled' type="radio" name="imgResult" value="2" />比对不一致
+									<input disabled='disabled' class="btn btn-primary" type="button" onclick="saveResult()" value="保存比对结果">
+								</div>
+								<div>
+									<img id="imgcom" src="" style="width: 100%;" />
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div id="item2" class="mui-control-content mui-content-padded">
+					<div class="z_result">
+						<textarea id="z_textarea" disabled="disabled"></textarea>
+					</div>
+
+					<!--<div class="mui-row z_btn_2">
+						<button onclick="shujucompare()" type="button" class="mui-btn mui-btn-blue mui-btn-outlined">数据一致性对比</button>
+						<button onclick="saveResult()" type="button" class="mui-btn mui-btn-blue mui-btn-outlined">保存数据对比结果</button>
+					</div>-->
+
+				</div>
+
+			</div>
+		</div>
+
+		<script type="text/javascript" src="../js/mui.min.js"></script>
+		<script src="../js/mui.zoom.js"></script>
+		<script src="../js/mui.previewimage.js"></script>
+		<script type="text/javascript" src="../js/jquery-3.1.1.js"></script>
+		<!--<script type="text/javascript" src="../js/ajaxupload.3.9.js"></script>-->
+		<script type="text/javascript" src="../js/exif.js"></script>
+		<script>
+			//mui初始化
+			mui.init({
+
+			});
+
+			var self;
+			var projname;
+			var anmodel;
+			var editioncode;
+			var pagecode;
+
+			//ajax请求数据 四级联动
+			var sel_pro_name = document.getElementById('sel_pro_name');
+			var sel_pro_ban = document.getElementById('sel_pro_ban');
+			var sel_pro_xh = document.getElementById('sel_pro_xh');
+			var sel_pro_code = document.getElementById('sel_pro_code');
+			var bdid = document.getElementById('bdid');
+			var result = document.getElementById('result');
+			var z_textarea = document.getElementById('z_textarea');
+			var local_img = document.getElementById('local_img');
+			var trueFileName = document.getElementById('trueFileName');
+			var sel_lbj = document.getElementById('sel_lbj');
+			var txsb_can = false;
+			var tbody = '';
+
+			function plusReady() {
+				self = plus.webview.currentWebview();
+				projname = self.projname;
+				anmodel = self.anmodel;
+				editioncode = self.editioncode;
+				pagecode = self.pagecode;
+				console.log(projname);
+				console.log(anmodel);
+				console.log(editioncode);
+				console.log(pagecode);
+
+				$("#sel_pro_name option").val(projname).text(projname);
+				$("#sel_pro_xh option").val(anmodel).text(anmodel);
+				$("#sel_pro_ban option").val(editioncode).text(editioncode);
+				$("#sel_pro_code option").val(pagecode).text(pagecode);
+
+				mui.ajax(urlpath + '/a/dataCompare/bdCom/appDataPrepare', {
+					data: {
+						projectname: sel_pro_name.value,
+						anmodel: sel_pro_xh.value,
+						editioncode: sel_pro_ban.value,
+						packagecode: sel_pro_code.value
+					},
+					type: 'post', //HTTP请求类型
+					success: function(data) {
+						console.log('刷新')
+						console.log(data.imgurl);
+						console.log(data.bdListBase);
+						console.log(data.trueFileName);
+
+						$('#textCom').val(data.textcom);
+						$('#textOrImg').val(data.textOrImg);
+						console.log(data.textOrImg);
+						var result_msg = data.bdListBase.bdMsg;
+						z_textarea.value = result_msg;
+						local_img.setAttribute('src', imgpath2 + data.imgurl);
+
+						if(null != data.textOrImg && data.textOrImg != undefined) {
+							if(data.textOrImg == 'text') {
+								$('#imgCompare').attr('style', 'display:none;');
+								$('#textCompare').attr('style', 'display:;');
+								$('#z_textarea').text(data.bdListBase.bdMsg);
+								$('#ident1 option').text(data.lbj_col1);
+								$('#ident2 option').text(data.lbj_col2);
+
+							} else {
+								$('#imgcom').attr('src', data.imgcomurl);
+								$('#textCompare').attr('style', 'display:none;');
+								$('#imgCompare').attr('style', 'display:;');
+								$('input[name="imgResult"][value=' + data.bdListBase.bdResult + ']').attr('checked', true);
+
+							}
+						}
+						shujucompare();
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+					}
+				});
+			}
+
+			//数据一致性比对
+			function shujucompare() {
+				var projectname = sel_pro_name.value;
+				var anmodel = sel_pro_xh.value;
+				var editioncode = sel_pro_ban.value;
+				var packagecode = sel_pro_code.value;
+				var postdata = new Array();
+				var i = 0;
+
+				var postData = JSON.stringify(postdata);
+				mui.ajax(urlpath + '/a/dataCompare/bdCom/compare', {
+					data: {
+						shuju: postData,
+						projectname: projectname,
+						anmodel: anmodel,
+						editioncode: editioncode,
+						packagecode: packagecode
+					},
+					type: "post",
+					success: function(data) {
+						if(null != data && null != data.msg && data.msg.indexOf("success") > -1) {
+//							mui.toast("比对信息成功！");
+							result.value = data.result;
+							var result_msg = data.result_msg;
+							z_textarea.value = result_msg
+						} else {
+							if(null != data && null != data.msg) {
+								mui.toast(data.msg);
+							} else {
+//								mui.toast('比对失败');
+							}
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+//						mui.toast('比对失败');
+					}
+				});
+			}
+
+			//保存比对结果
+			function saveResult() {
+				var bdid = $("#bdid").val();
+				console.log(bdid);
+				var result = $("#result").val();
+				console.log(result);
+				var result_msg = $("#z_textarea").val();
+				console.log(result_msg);
+				mui.ajax(urlpath + '/a/dataCompare/bdCom/saveResult', {
+					data: {
+						result: result,
+						result_msg: result_msg,
+						bdid: bdid
+					},
+					type: "post",
+					success: function(data) {
+						mui.toast("保存比对结果成功");
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+					}
+				});
+
+			}
+
+			//切换零部件
+			function selectCom() {
+				var projectname = sel_pro_name.value;
+				var anmodel = sel_pro_xh.value;
+				var editioncode = sel_pro_ban.value;
+				var packagecode = sel_pro_code.value;
+				var comtype = sel_lbj.value;
+
+				mui.ajax(urlpath + '/a/dataCompare/bdCom/selectCom', {
+					data: {
+						projectname: projectname,
+						anmodel: anmodel,
+						editioncode: editioncode,
+						packagecode: packagecode,
+						comtype: comtype
+					},
+					dataType: 'json',
+					type: "post",
+
+					success: function(data) {
+						console.log('切换零部件')
+						if(null != data && data != undefined && null != data.msg && data.msg != undefined) {
+
+							mui.toast(data.msg);
+							$('#imgcom').attr('src', data.imgcomurl);
+							$('#textCom').val(data.textcom);
+							$('#textOrImg').val(data.textOrImg);
+							$('#ident1 option').text(data.lbj_col1);
+							$('#ident2 option').text(data.lbj_col2);
+							local_img.setAttribute('src', imgpath2 + data.imgurl);
+
+							if(null != data.textOrImg && data.textOrImg != undefined && data.bdMsg != undefined) {
+								if(data.textOrImg == 'text') {
+									$('#imgCompare').attr('style', 'display:none;');
+									$('#textCompare').attr('style', 'display:;');
+									$('#z_textarea').text(data.bdMsg);
+
+								} else {
+									$('#textCompare').attr('style', 'display:none;');
+									$('#imgCompare').attr('style', 'display:;');
+									$('input[name="imgResult"][value=' + data.bdListBase.bdResult + ']').attr('checked', true);
+
+								}
+							}
+						}
+					},
+					error: function(data) {}
+				});
+			}
+
+			///////////////////////图片拍照选取上传///////////////////////////
+
+			var page = null;
+			page = {
+				imgUp: function() {
+					var m = this;
+					plus.nativeUI.actionSheet({
+						cancel: "取消",
+						buttons: [{
+								title: "拍照"
+							},
+							{
+								title: "从相册中选择"
+							}
+						]
+					}, function(e) { //1 是拍照  2 从相册中选择  
+						switch(e.index) {
+							case 1:
+								clickCamera();
+								break;
+							case 2:
+								clickGallery();
+								break;
+						}
+					});
+				}
+				//摄像头  
+			}
+
+			//发送照片  
+			function clickGallery() {
+				plus.gallery.pick(function(path) {
+					txsb_can = true;
+					plus.zip.compressImage({
+						src: path,
+						dst: "_doc/chat/gallery/" + path,
+						quality: 20,
+						overwrite: true
+					}, function(e) {
+						var task = plus.uploader.createUpload(urlpath + '/a/dataCompare/bdCoc/mobileUpload', {
+							method: "post"
+						}, function(t, sta) {
+							if(sta == 200) {
+								console.log('上传图片成功');
+								var data = JSON.parse(t.responseText);
+								var imgUrl = data.urls;
+								var re = new RegExp("\\\\", "g");
+								imgUrl = imgUrl.replace(re, "/");
+								uploadMsg(2, imgUrl);
+								console.log(imgUrl);
+								local_img.setAttribute('src', imgUrl);
+							}
+						});
+						task.addFile(e.target, {});
+						task.start();
+					}, function(err) {
+						console.error("压缩失败：" + err.message);
+					});
+
+				}, function(err) {});
+			};
+
+			//拍照  
+			function clickCamera() {
+				txsb_can = true;
+				var cmr = plus.camera.getCamera();
+				var res = cmr.supportedImageResolutions[0];
+				var fmt = cmr.supportedImageFormats[0];
+
+				//				interface CameraOption {
+				//					filename:
+				//				}
+				cmr.captureImage(function(path) {
+					console.log(path);
+					plus.io.resolveLocalFileSystemURL(path, function(entry) {
+						mui.toast('正在加载图片');
+						var localUrl = entry.toLocalURL();
+						plus.zip.compressImage({
+							src: localUrl,
+							dst: "_doc/chat/camera/" + localUrl,
+							quality: 20,
+							overwrite: true
+						}, function(e) {
+							console.log(localUrl);
+							var task = plus.uploader.createUpload(urlpath + '/a/dataCompare/bdCoc/mobileUpload', {
+								method: "post",
+								data: {
+
+								},
+							}, function(t, sta) {
+								if(sta == 200) {
+									var data = JSON.parse(t.responseText);
+									//									console.log(data.imgName);
+									//									console.log(data.imgTrueName);
+									//									console.log(data.msg);
+									//									console.log(data.path);
+									$('#trueFileName').val(data.imgTrueName);
+									mui.toast('图片上传成功');
+								}
+							});
+							task.addFile(e.target, {});
+							task.start();
+						}, function(err) {
+							console.log("压缩失败：  " + err.message);
+						});
+
+						var canvimg = new Image();
+						canvimg.src = localUrl;
+						canvimg.onload = function() {
+							console.log(localUrl);
+							autoImg(canvimg);
+
+						}
+					});
+
+				}, function(err) {
+					console.error("拍照失败：" + err.message);
+					mui.toast('请重新拍摄')
+				}, {
+					index: 1
+				});
+
+			};
+
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			}
+			////////////////////////////////////////////////////////////
+
+			//图片旋转
+			function autoImg(img) {
+				var canvas = document.createElement("canvas");
+				var ctx = canvas.getContext("2d");
+				var expectWidth = img.width;
+				var expectHeight = img.width;
+				canvas.width = expectWidth;
+				canvas.height = expectWidth;
+				ctx.drawImage(img, 0, 0, expectWidth, expectHeight);
+				var base64 = null;
+				var Orientation = null;
+				EXIF.getData(img, function() {
+					EXIF.getAllTags(this);
+					Orientation = EXIF.getTag(this, 'Orientation');
+					console.log(Orientation);
+				});
+				setTimeout(function() {
+					//修复ios  
+					if(navigator.userAgent.match(/iphone/i)) {
+						console.log('iphone');
+						//alert(expectWidth + ',' + expectHeight);  
+						//如果方向角不为1，都需要进行旋转 added by lzk  
+						if(Orientation != "" && Orientation != 1) {
+							alert('旋转处理');
+							switch(Orientation) {
+								case 6: //需要顺时针（向左）90度旋转  							
+									rotateImg(img, 'left', canvas);
+									break;
+								case 8: //需要逆时针（向右）90度旋转  								
+									rotateImg(img, 'right', canvas);
+									break;
+								case 3: //需要180度旋转  								
+									rotateImg(img, 'right', canvas); //转两次  
+									rotateImg(img, 'right', canvas);
+									break;
+							}
+						}
+
+						base64 = canvas.toDataURL("image/jpeg", 1);
+					}
+					//				else if(navigator.userAgent.match(/Android/i)) { // 修复android
+					//					var encoder = new JPEGEncoder();
+					//					base64 = encoder.encode(ctx.getImageData(0, 0, expectWidth, expectHeight), 80);
+					//				} 
+					else {
+						console.log(Orientation);
+						//alert(Orientation);  
+						if(Orientation != "" && Orientation != 1) {
+							//alert('旋转处理');  
+							switch(Orientation) {
+								case 6: //需要顺时针（向左）90度旋转  
+									rotateImg(img, 'left', canvas);
+									break;
+								case 8: //需要逆时针（向右）90度旋转  								
+									rotateImg(img, 'right', canvas);
+									break;
+								case 3: //需要180度旋转 								
+									rotateImg(img, 'right', canvas); //转两次  
+									rotateImg(img, 'right', canvas);
+									break;
+							}
+						}
+
+						base64 = canvas.toDataURL("image/jpeg", 1);
+					}
+					local_img.setAttribute('src', base64);
+				}, 200)
+
+				//图片预览
+				mui.previewImage();
+			}
+
+			//对图片旋转处理 added by lzk  
+			function rotateImg(img, direction, canvas) {
+				console.log(img);
+				//alert(img);  
+				//最小与最大旋转方向，图片旋转4次后回到原方向    
+				var min_step = 0;
+				var max_step = 3;
+				//var img = document.getElementById(pid);    
+				if(img == null) return;
+				//img的高度和宽度不能在img元素隐藏后获取，否则会出错    
+				var height = img.height;
+				var width = img.width;
+				//var step = img.getAttribute('step');    
+				var step = 2;
+				if(step == null) {
+					step = min_step;
+				}
+				if(direction == 'right') {
+					step++;
+					//旋转到原位置，即超过最大值    
+					step > max_step && (step = min_step);
+				} else {
+					step--;
+					step < min_step && (step = max_step);
+				}
+				var ctx = canvas.getContext("2d");
+				//旋转角度以弧度值为参数    
+				var degree = step * 90 * Math.PI / 180;
+				switch(step) {
+					case 0:
+						canvas.width = width;
+						canvas.height = height;
+						ctx.drawImage(img, 0, 0);
+						break;
+					case 1:
+						canvas.width = height;
+						canvas.height = width;
+						ctx.rotate(degree);
+						ctx.drawImage(img, 0, -height);
+						break;
+					case 2:
+						canvas.width = width;
+						canvas.height = height;
+						ctx.rotate(degree);
+						ctx.drawImage(img, -width, -height);
+						break;
+					case 3:
+						canvas.width = height;
+						canvas.height = width;
+						ctx.rotate(degree);
+						ctx.drawImage(img, -width, 0);
+						break;
+				}
+			}
+
+			$("#share").on('click', function() {
+				mui.openWindow({
+					url: 'yz_share_img.html',
+					id: 'yz_share_img.html',
+					styles: {
+						top: 0, //新页面顶部位置
+						bottom: 0, //新页面底部位置						
+					},
+					extras: {
+						projectname: sel_pro_name.value,
+						anmodel: sel_pro_xh.value,
+						editioncode: sel_pro_ban.value,
+						packagecode: sel_pro_code.value,
+						trueFileName: trueFileName.value,
+						comtype: sel_lbj.value,
+					},
+					createNew: false, //是否重复创建同样id的webview，默认为false:不重复创建，直接显示
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true						
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载...', //等待对话框上显示的提示内容
+						options: {
+
+						}
+					}
+				})
+				//关闭弹出菜单
+				setTimeout(function() {
+					mui('#bottomPopover').popover('hide'); //show hide toggle
+				}, 200)
+
+			})
+
+			//图片预览
+			mui.previewImage();
+		</script>
+	</body>
+
+</html>

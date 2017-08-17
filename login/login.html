@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+
+		<style type="text/css">
+			.anniu14 {
+				width: 50%;
+				margin: 0 auto;
+				height: 42px;
+				font-size: 1em;
+			}
+		</style>
+	</head>
+
+	<body style="background-color: #363e6c;">
+		<div style="text-align: center;margin:40px 0">
+			<img src="logo.png" style="width: 300px;">
+		</div>
+		
+		<div class="mui-content" style="background: rgba(255,255,255,0.3);">
+			<form id='login-form' style="width: 50%; margin: 0 auto;padding-top: 40px;">
+				<div class="mui-input-row">
+					<input id="username" type="text" class="mui-input-clear" placeholder="输入账号" style="height: 43px;">
+				</div>
+				<div class="mui-input-row mui-password">
+					<input id="password" type="password" class="mui-input-password" placeholder="输入密码" style="height: 43px;">
+				</div>
+				<div id="yzm" style="display: none;">
+					<label for="validateCode">验证码:</label>
+					<input id="yzmval" type="text" id="validateCode" name="validateCode" maxlength="5" style="font-weight:bold;width:25%;margin-bottom:0;" />
+					<img id="yanzhengma" style="width:25%;height: 30px;margin-bottom: -10px;" />
+					<a id="kanbuqing">看不清</a>
+				</div>
+			</form>
+			<div align="center" style="margin-top: 3%;">
+				<button id='login' class="mui-btn mui-btn-primary anniu14" data-loading-icon="" data-loading-text="正在登录，请稍后..." style="border:0px;background-color: #4092c4; margin-bottom: 40px;">登 录</button>
+			</div>
+		</div>
+
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/my.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				console.log(plus.storage.getItem('$sessionid'));
+				if(plus.storage.getItem('$sessionid')) {
+					plus.webview.currentWebview().hide();
+					return;
+				}
+				//	是否需要验证码
+				var isValidate = false;
+				//设置全局beforeSend
+				mui.ajaxSettings.beforeSend = function(xhr, setting) {
+					//beforeSend演示,也可在$.ajax({beforeSend:function(){}})中设置单个Ajax的beforeSend
+					console.log('beforeSend:::' + JSON.stringify(setting));
+				};
+				//设置全局complete
+				mui.ajaxSettings.complete = function(xhr, status) {
+					console.log('complete:::' + status);
+					console.log('complete:::' + xhr.status);
+					console.log('complete:::' + xhr.readyState);
+				}
+				document.getElementById("login").addEventListener('tap', function() {
+					mui("#login").button('loading');
+					var un = document.getElementById("username");
+					var pw = document.getElementById("password");
+					var validate = document.getElementById("yzmval");
+					var url = urlpath + '/a/login?_ajax=true';
+					var mydata;
+					if(isValidate == true) {
+						console.log("isValidate == true");
+						console.log("username =" + un.value);
+						mydata = {
+							username: un.value,
+							password: pw.value,
+							validateCode: validate.value,
+							rememberMe: 'true',
+							mobileLogin: 'true'
+						};
+					} else {
+						console.log("isValidate == false");
+						mydata = {
+							username: un.value,
+							password: pw.value,
+							mobileLogin: 'true',
+							rememberMe: 'true'
+						};
+					}
+					console.log(mydata.username);
+					mui.ajax(url, {
+						data: mydata,
+						dataType: 'json',
+						type: 'post',
+						success: function(response) {
+							console.log(JSON.stringify(response));
+							if(response.isValidateCodeLogin == true) {
+								console.log("========3次登录错误 显示验证码===========");
+								isValidate = true;
+								document.getElementById("yzm").style.display = "block";
+							}
+							mui.toast(response.message);
+							refresh();
+							console.log("response.id =" + response.id + "========response.sessionid =" + response.sessionid);
+							if(response.sessionid) {
+								console.log("========登录成功!===========");
+								isValidate = false;
+								document.getElementById("yzm").style.display = "none";
+								document.getElementById("yzmval").value = "";
+								plus.storage.setItem('name', response.name);
+								plus.storage.setItem('loginName', response.loginName);
+								plus.storage.setItem('$id', response.id);
+								plus.storage.setItem('$sessionid', response.sessionid);
+								plus.webview.currentWebview().hide();
+								var self = plus.webview.currentWebview();
+								console.log(self.index);
+								//						plus.webview.getLaunchWebview().reload();// 重新加载页面
+								console.log("=========================");
+								if(self.index == 'tab-orglive') {
+									plus.webview.show('tab-orglive.html', "fade-in", 300);
+									plus.webview.getWebviewById('tab-orglive.html').reload();
+								}
+								if(self.index == 'tab-edu') {
+									plus.webview.show('tab-edu.html', "fade-in", 300);
+									plus.webview.getWebviewById('tab-edu.html').reload();
+								}
+								if(self.index == 'tab-person-main') {
+									plus.webview.show('tab-person-main.html', "fade-in", 300);
+									plus.webview.getWebviewById('tab-person-main.html').reload();
+								}
+								if(self.index == 'logout') {
+//									plus.webview.getLaunchWebview().reload();
+									plus.webview.show('tab-news.html', "fade-in", 300);
+									plus.webview.getWebviewById('tab-news.html').reload();
+								}
+								mui("#login").button('reset');
+							plus.webview.currentWebview().close();
+							}
+							
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+							mui.toast("登录异常,请稍后再尝试登录!");
+							mui("#login").button('reset');
+						}
+					});
+				});
+				document.getElementById("kanbuqing").addEventListener('tap', function() {
+					refresh();
+				});
+				document.getElementById("yanzhengma").addEventListener('tap', function() {
+					refresh();
+				});
+				var refresh = function() {
+					document.getElementById("yanzhengma").src = urlpath + "/servlet/validateCodeServlet";
+				};
+			});
+		</script>
+	</body>
+
+</html>
