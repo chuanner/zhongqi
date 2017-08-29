@@ -139,6 +139,13 @@
 					count = len;
 				}
 				for(var i = 0; i < count; i++) {
+					for(var j in data.rDate[i]){
+//						console.log(data.rDate[i][j]);
+//						console.log(j);
+						if(data.rDate[i][j] == undefined || data.rDate[i][j] == null){
+							data.rDate[i][j] = '';
+						}
+					}
 					li = document.createElement('li');
 					li.id = data.rDate[i].id
 					li.className = 'mui-table-view-cell';

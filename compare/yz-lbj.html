@@ -73,7 +73,7 @@
 			<div class="mui-button-row z_btn_1">
 				<div class="mui-col-sm-4 mui-col-xs-4 " style="float: left;">
 					<p class="z_p_1">关键零部件：</p>
-					<select id="sel_lbj" onchange="selectCom()" class="mui-btn mui-btn-block z_sl_1 " style="width: 200px; float: left;">
+					<select id="sel_lbj" onchange="selectCom()" class="mui-btn mui-btn-block z_sl_1 " style="width: 200px; float: left; margin-left: 50px;">
 						<option value="发动机">发动机</option>
 						<option value="ECU">ECU</option>
 						<option value="EGR">EGR</option>
@@ -700,11 +700,12 @@
 					type: "post",
 
 					success: function(data) {
-						console.log('切换零部件')
+						console.log('切换零部件');
+						console.log(data.imgcomurl);
 						if(null != data && data != undefined && null != data.msg && data.msg != undefined) {
 
 							mui.toast(data.msg);
-							$('#imgcom').attr('src', data.imgcomurl);
+							$('#imgcom').attr('src',imgpath2 + data.imgcomurl);
 							$('#textCom').val(data.textcom);
 							$('#textOrImg').val(data.textOrImg);
 							$('#ident1').val(data.lbj_col1);
@@ -718,7 +719,6 @@
 									if(null != data.bdListBase && data.bdListBase != undefined) {
 										$('#z_textarea').text(data.bdListBase.bdMsg);
 									}
-
 								} else {
 									$('#textCompare').attr('style', 'display:none;');
 									$('#imgCompare').attr('style', 'display:;');

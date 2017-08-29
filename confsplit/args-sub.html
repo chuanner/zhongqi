@@ -139,6 +139,13 @@
 				}
 
 				var createFragment = function(ul, count, data) {
+					for(var j in data.rDate[i]){
+//						console.log(data.rDate[i][j]);
+						console.log(j);
+						if(data.rDate[i][j] == undefined || data.rDate[i][j] == null){
+							data.rDate[i][j] = '';
+						}
+					}
 					var fragment = document.createDocumentFragment();
 					var li;
 					var jg, len;

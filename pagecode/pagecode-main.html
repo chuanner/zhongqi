@@ -6,10 +6,18 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style>
+			#divnav a {
+				position: relative;
+				top: -4px;
+			}
+		</style>
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav" style="background: #4092c4;">
+		<header class="mui-bar mui-bar-nav">
+			<a id="back" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="width: 20px;"></a>
+			<p id="xzc" style="position: absolute;"></p>
 			<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
 				<div id="divnav" class="mui-scroll" style="width: 100%;font-size: 16px;">
 					<!--<a class="mui-control-item mui-active" href="#item1mobile" style="width: 45%;">
@@ -27,18 +35,20 @@
 			mui.plusReady(function() {
 				plus.screen.lockOrientation("landscape-primary", "landscape-secondary");
 				mui.init();
-				
 				var firstwvid;
 				var wv = plus.webview.currentWebview();
 				var wvid = wv.id;
 				var data = wvid.split("-fudd-");
-
 				var csid = data[0];
 				var anid = data[1];
 				var editioncode = data[2];
-				
+
 				var listUrl = urlpath + '/a/configuration_rule/tcConfigurationRule/apppagecode?anid=' + anid + "&csid=" + csid;
 				console.log(listUrl);
+
+				var self = plus.webview.currentWebview();
+				var xzc_carType = self.xzc_carType;
+
 				mui.getJSON(listUrl, {}, function(data) {
 					console.log(JSON.stringify(data));
 					var len = data.rDate.length;
@@ -56,12 +66,12 @@
 						}
 						a.href = "#item" + (i + 1) + "mobile";
 						a.id = data.rDate[i] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
-						
+
 						console.log(a.id);
 						a.setAttribute("style", "width: " + w + "%;");
 						a.innerHTML = data.rDate[i];
 						a.addEventListener('tap', function() {
-							console.log("sub id = "+this.getAttribute("id"));
+							console.log("sub id = " + this.getAttribute("id"));
 							mui.openWindow({
 								id: this.getAttribute("id"),
 								url: 'pagecode-sub.html',
@@ -74,12 +84,15 @@
 								},
 								waiting: {
 									autoShow: false
+								},
+								extras: {
+									xzc_ct: xzc_carType,
 								}
 							});
 						});
 						diva.appendChild(a);
 					}
-					console.log("sub id = "+firstwvid);
+					console.log("sub id = " + firstwvid);
 					mui.openWindow({
 						id: firstwvid,
 						url: 'pagecode-sub.html',
@@ -92,9 +105,11 @@
 						},
 						waiting: {
 							autoShow: false
+						},
+						extras: {
+							xzc_ct: xzc_carType,
 						}
 					});
-
 				});
 			});
 		</script>

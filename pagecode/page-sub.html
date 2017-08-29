@@ -135,7 +135,7 @@
 						mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
 					}, 1500);
 				}
-
+				console.log("33333333333");
 				var createFragment = function(ul, count, data) {
 					var fragment = document.createDocumentFragment();
 					var li;
@@ -145,7 +145,7 @@
 						count = len;
 					}
 					for(var i = 0; i < count; i++) {
-						
+						console.log(data.rDate[i].remark);
 						console.log("fbid="+data.rDate[i].id);
 						console.log("photo="+data.rDate[i].photo);
 						li = document.createElement('li');

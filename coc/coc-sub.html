@@ -6,6 +6,22 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			#cbtn,
+			#qbtn {
+				width: 80px;
+				background: #4092c4;
+				border: 1px solid #4092c4;
+				margin: 0 10px;
+			}
+			
+			#qmodel,
+			#qgroup {
+				height: 35px;
+				border-radius: 5px;
+				border: 1px solid #ccc;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -20,12 +36,12 @@
 				private String ANGroup;//批次
 				private String issuedDate;//发布日期
 				private String zwpp;//中文品牌-->
-				<div class="" style="width: 100%;padding-left: 25px;">
+				<div class="" style="width: 100%;padding-left: 25px;padding-top: 20px;">
 					车型名称：<input id="qmodel" class="mui-col-sm-2" /><span style="padding-left: 5px;">COC编号：</span><input id="qgroup" class="mui-col-sm-2" />
 					<button id="cbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-search mui-col-sm-2">
 		                                        查询
 		        	</button>
-		        	<button id="qbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-clear mui-col-sm-2">
+					<button id="qbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-clear mui-col-sm-2">
 		                                        清空
 		        	</button>
 				</div>
@@ -71,7 +87,7 @@
 				pullRefresh: {
 					container: '#pullrefresh',
 					down: {
-//						auto: true, //可选,默认false.首次加载自动下拉刷新一次
+						//						auto: true, //可选,默认false.首次加载自动下拉刷新一次
 						contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
 						contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
 						contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
@@ -95,7 +111,7 @@
 				var coccode = document.getElementById("qgroup").value;
 				setTimeout(function() {
 					page = 1;
-					var url = urlpath + '/a/BaseDataCheck/COC/APPlist?carType='+cartype+'&cocCode='+coccode+'&pageNo=' + page + '&pageSize=' + pageSize;
+					var url = urlpath + '/a/BaseDataCheck/COC/APPlist?carType=' + cartype + '&cocCode=' + coccode + '&pageNo=' + page + '&pageSize=' + pageSize;
 					console.log(url);
 					mui.getJSON(url, {}, function(data) {
 						console.log(JSON.stringify(data));
@@ -124,7 +140,7 @@
 				var cartype = document.getElementById("qmodel").value;
 				var coccode = document.getElementById("qgroup").value;
 				setTimeout(function() {
-					var url = urlpath + '/a/BaseDataCheck/COC/APPlist?carType='+cartype+'&cocCode='+coccode+'&pageNo=' + page + '&pageSize=' + pageSize;
+					var url = urlpath + '/a/BaseDataCheck/COC/APPlist?carType=' + cartype + '&cocCode=' + coccode + '&pageNo=' + page + '&pageSize=' + pageSize;
 					console.log(url);
 					mui.getJSON(url, {}, function(data) {
 						var ul = document.querySelector('.mui-table-view');

@@ -144,6 +144,20 @@
 		<!--<script type="text/javascript" src="../js/ajaxupload.3.9.js"></script>-->
 		<script type="text/javascript" src="../js/exif.js"></script>
 		<script>
+			mui.ajax(urlpath + '/a/dataCompare/bdHgz/getAPPTcpageList', {
+				type: 'post', //HTTP请求类型
+				success: function(data) {
+					console.log(data.length);
+					console.log(data[0]);
+					for(l in data[0]){
+						console.log(l);
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					console.log(type);
+				}
+			});
+
 			//mui初始化
 			mui.init({
 				//退出时存值
@@ -161,7 +175,7 @@
 					type: 'post', //HTTP请求类型
 					success: function(data) {
 						var pCode_hgz = plus.storage.getItem("pCode_hgz");
-						if(pCode_hgz == null) {	
+						if(pCode_hgz == null) {
 							addOption(sel_pro_name, '请选择项目名称', data.projnameList);
 						} else {
 							addOption(sel_pro_name, '请选择项目名称', data.projnameList);
@@ -205,7 +219,7 @@
 				sel_pro_xh.innerHTML = "";
 				sel_pro_ban.innerHTML = "";
 				sel_pro_code.innerHTML = "";
-				if(this.value == '请选择项目名称'){
+				if(this.value == '请选择项目名称') {
 					return;
 				}
 				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findXhByProjectname', {
@@ -225,7 +239,7 @@
 			sel_pro_xh.onchange = function() {
 				sel_pro_ban.innerHTML = "";
 				sel_pro_code.innerHTML = "";
-				if(this.value == '请选择车辆型号'){
+				if(this.value == '请选择车辆型号') {
 					return;
 				}
 				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findBbhByProjectAndXh', {
@@ -245,7 +259,7 @@
 			//联动packagecode
 			sel_pro_ban.onchange = function() {
 				sel_pro_code.innerHTML = "";
-				if(this.value == '请选择版本号'){
+				if(this.value == '请选择版本号') {
 					return;
 				}
 				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findPcodeByPxb', {
@@ -282,7 +296,7 @@
 					parent.appendChild(option);
 				}
 			}
-			
+
 			//缓存车辆型号
 			function xh_init() {
 				sel_pro_ban.innerHTML = "";
@@ -435,8 +449,8 @@
 				}
 				$("#hgzRemark").val(hgzRemark);
 			}
-			
-///////////////////////图片拍照选取上传///////////////////////////
+
+			///////////////////////图片拍照选取上传///////////////////////////
 			var page = null;
 			page = {
 				imgUp: function() {
@@ -717,6 +731,8 @@
 										var prvalue = data_list[i].prvalue;
 										var prname = data_list[i].prname;
 										var prNum = data_list[i].prNum;
+
+										console.log(prNum);
 										if(typeof(prcode) == "undefined") {
 											prcode = "";
 										}
@@ -763,7 +779,8 @@
 					element.prname = $(this).find("td").eq(1).text();
 					element.prcode = $(this).find("td").eq(2).text();
 					element.prvalue = $(this).find("td").eq(3).find("input").val();
-					element.prNum = $(this).find("td").eq(4).find("input").val();
+					element.prNum = $(this).find("td").eq(4).text();
+					console.log(element.prNum);
 					//					if(element.prcode=="hgz_remark"){
 					//						element.prvalue=$("#hgzRemark").val();
 					//					}

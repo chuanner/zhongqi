@@ -5,8 +5,23 @@
 		<meta charset="UTF-8">
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
 		<link rel="stylesheet" type="text/css" href="../css/app.css" />
+		<style type="text/css">
+			#cbtn,
+			#qbtn{
+				width: 80px;
+				background: #4092c4;
+				border: 1px solid #4092c4;
+				margin: 0 10px;
+			}
+			#qmodel,
+			#qgroup{
+				height: 35px;
+				border-radius: 5px;
+				border: 1px solid #ccc;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -21,7 +36,7 @@
 				private String ANGroup;//批次
 				private String issuedDate;//发布日期
 				private String zwpp;//中文品牌-->
-				<div class="" style="width: 100%;padding-left: 25px;">
+				<div class="" style="width: 100%;padding-left: 25px; padding-top: 20px;">
 					车辆型号：<input id="qmodel" class="mui-col-sm-2" /><span style="padding-left: 5px;">批次：</span><input id="qgroup" class="mui-col-sm-2" />
 					<button id="cbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-search mui-col-sm-2">
 		                                        查询
@@ -193,7 +208,7 @@
 				var fragment = document.createDocumentFragment();
 				var li;
 				var jg, len;
-				len = data.rDate.length
+				len = data.rDate.length;
 				if(len < count) {
 					count = len;
 				}
@@ -217,18 +232,23 @@
 						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].editioncode) + '</span>';
 					li.addEventListener('tap', function() {
 						console.log("list id = " + this.getAttribute("id"));
+						var xzc_car = this.childNodes[5].innerHTML;
+						console.log(xzc_car);
 						mui.openWindow({
 							id: this.getAttribute("id"),
 							url: '../pagecode/pagecode-main.html',
 							styles: {
-								popGesture: 'close'
+								popGesture: 'close',
 							},
 							show: {
 								aniShow: 'slide-in-right'
 							},
 							waiting: {
 								autoShow: false
-							}
+							},
+							extras:{
+						        xzc_carType:xzc_car,
+						    }
 						});
 					});
 					fragment.appendChild(li);

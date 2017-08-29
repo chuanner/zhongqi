@@ -17,14 +17,17 @@
 			}
 			
 			#pic {
-				width: 120px;
-				height: 120px;
+				width: 300px;
+				height: 250px;
+				margin-top: 20px;
 				/*border: 1px dashed #CCCCCC;*/
 			}
 			
 			#img {
-				width: 120px;
-				height: 120px;
+				width: 300px;
+				height: 250px;
+				margin-right: 50px;
+				margin-top: 20px;
 				/*border: 1px dashed #CCCCCC;*/
 			}
 			
@@ -221,30 +224,33 @@
 		</header>
 		<div class="dcontent">
 			<br/>
-			<p class="heading">上传图片：</p>
-			<table style="width:100%;">
+			<!--<p class="heading">上传图片：</p>-->
+			<div id="btn1" style="background: #4092c4; display: inline-block; margin: 0 70px;" class="button button-select" onclick="shareCameraPicture()">拍照</div>
+			<div id="btn2" style="background: #4092c4; display: inline-block;  margin: 0 70px;" class="button button-select" onclick="shareGalleryPicture()">相册选取</div>
+			<p></p>
+			<!--<table style="width:100%;">
 				<tbody>
 					<tr>
-						<td style="width:40%">
-							<div id="btn1" style="background: blue;" class="button button-select" onclick="shareCameraPicture()">拍照</div>
+						<td style="width:50%">
+							
 						</td>
-						<td style="width:40%">
-							<div id="btn2" style="background: blue;" class="button button-select" onclick="shareGalleryPicture()">相册选取</div>
+						<td style="width:50%">
+							
 						</td>
-						<!--<td style="width:30%">
+						<td style="width:30%">
 							<div id="btn3" style="background: red;" class="button button-select" onclick="delPicture()">删除图片</div>
-						</td>-->
+						</td>
 					</tr>
 				</tbody>
-			</table>
-			<img id="img" src="../images/add.png" data-preview-src="" data-preview-group="1" />
-			<img id="pic" src="../images/add.png" />
+			</table>-->
+			<img id="img" src="../images/4.jpg" data-preview-src="" data-preview-group="1" />
+			<img id="pic" src="../images/4.jpg" />
 			<br/>
 			<!--<span style="font-size: 20px;color: red;">注: </span>
 			<span style="font-size: 15px;color: blue;">左侧为待上传图片,右侧为当前图片</span>
 			<br/>-->
 			<div style="padding: 0.5em 1em;">
-				<hr color="blueviolet" />
+				<hr color="#4092c4" />
 			</div>
 			<p class="heading">是否删除图片：</p>
 			<select id="delimg" style="width: 50%;">
@@ -335,7 +341,8 @@
 				//				console.log("开始上传：" + url);
 				var wt = plus.nativeUI.showWaiting();
 				var remark_raw = document.getElementById("remark").value
-				var remark = toUnicode(remark_raw);
+				var remark = remark_raw;
+//				var remark = toUnicode(remark_raw);
 				var uniflag = document.getElementById("sel").value;
 				var urlsave = urlpath + '/a/pagecode/tcPagecode/saveAjax?id=' + id + '&remark=' + remark + '&uniflag=' + uniflag;
 				console.log(urlsave);
@@ -383,7 +390,6 @@
 					});
 					task.start();
 				}
-
 			}
 
 			function toUnicode(s) {

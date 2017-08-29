@@ -635,7 +635,7 @@
 					element.prname = $(this).find("td").eq(1).text();
 					element.prcode = $(this).find("td").eq(2).text();
 					element.prvalue = $(this).find("td").eq(3).find("input").val();
-					element.prNum = $(this).find("td").eq(4).find("input").val();
+					element.prNum = $(this).find("td").eq(4).text();
 					//					if(element.prcode=="hgz_remark"){
 					//						element.prvalue=$("#hgzRemark").val();
 					//					}
@@ -779,7 +779,7 @@
 							if(sta == 200) {
 								var data = JSON.parse(t.responseText);
 								console.log(data.path);
-
+								
 								if($('#item3').hasClass('mui-active')) {
 									local_img_1.setAttribute('src', imgpath2 + data.path);
 									$('#trueFileName').val(data.imgTrueName);
@@ -949,7 +949,7 @@
 				mui.previewImage();
 			}
 
-			//对图片旋转处理 added by lzk  
+			//对图片旋转处理  
 			function rotateImg(img, direction, canvas) {
 				console.log(img);
 				//alert(img);  

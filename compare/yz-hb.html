@@ -153,6 +153,43 @@
 		<!--<script type="text/javascript" src="../js/ajaxupload.3.9.js"></script>-->
 		<script type="text/javascript" src="../js/exif.js"></script>
 		<script>
+			//mui初始化
+			mui.init({
+				beforeback: function() {
+					plus.storage.setItem("pName_hb", sel_pro_name.value);
+					plus.storage.setItem("ban_hb", sel_pro_ban.value);
+					plus.storage.setItem("xh_hb", sel_pro_xh.value);
+					plus.storage.setItem("pCode_hb", sel_pro_code.value);
+				}
+			});
+
+			function plusReady() {
+				//进入页面刷出项目名称
+				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findProjnameList', {
+					type: 'post', //HTTP请求类型
+					success: function(data) {
+						var pCode_hb = plus.storage.getItem("pCode_hb");
+						if(pCode_hb == null) {
+							addOption(sel_pro_name, '请选择项目名称', data.projnameList);
+						} else {
+							addOption(sel_pro_name, '请选择项目名称', data.projnameList);
+							sel_pro_name.value = plus.storage.getItem("pName_hb");
+							xh_init();
+						}
+
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+					}
+				});
+
+				// 弹出系统选择按钮框  
+				mui("body").on("tap", ".imageup", function() {
+					page.imgUp();
+				})
+
+			}
+
 			if(window.plus) {
 				plusReady();
 			} else {
@@ -173,67 +210,87 @@
 
 			var txsb_can = false;
 
-			mui.ajax(urlpath + '/a/dataCompare/bdHgz/findProjnameList', {
-				//				data: {
-				//					username: 'username',
-				//					password: 'password'
-				//				},
-				type: 'post', //HTTP请求类型
-				success: function(data) {
-					console.log("ajax=============")
-					var option_1 = document.createElement('option');
-					option_1.innerHTML = '请选择项目名称';
-					sel_pro_name.appendChild(option_1);
-					var list_string = String(data.projnameList);
-					var list = list_string.split(",");
-					for(var i = 0, len = list.length; i < len; i++) {
-						//						console.log(list[i]);
-						var option = document.createElement('option');
-						option.value = list[i];
-						option.innerHTML = list[i];
-
-						sel_pro_name.appendChild(option);
-
-					}
-				},
-				error: function(xhr, type, errorThrown) {
-					console.log(type);
-
-				}
-			});
-
+			//联动车辆型号
 			sel_pro_name.onchange = function() {
-				sel_pro_ban.innerHTML = "";
 				sel_pro_xh.innerHTML = "";
+				sel_pro_ban.innerHTML = "";
 				sel_pro_code.innerHTML = "";
-				console.log(sel_pro_name.value);
+				if(this.value == '请选择项目名称') {
+					return;
+				}
 				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findXhByProjectname', {
 					data: {
 						projectname: sel_pro_name.value
 					},
 					type: 'post', //HTTP请求类型
 					success: function(data) {
-						console.log("ajax=============")
-						console.log(data);
-						var option_1 = document.createElement('option');
-						option_1.innerHTML = '请选择车辆型号';
-						sel_pro_xh.appendChild(option_1);
-						var list_string = String(data.anmodelList);
-						var list = list_string.split(",");
-						for(var i = 0, len = list.length; i < len; i++) {
-							//						console.log(list[i]);
-							var option = document.createElement('option');
-							option.value = list[i];
-							option.innerHTML = list[i];
-
-							sel_pro_xh.appendChild(option);
-						}
+						addOption(sel_pro_xh, '请选择车辆型号', data.anmodelList);
 					},
 					error: function(xhr, type, errorThrown) {
 						console.log(type);
-
 					}
 				});
+			}
+			//联动版本号
+			sel_pro_xh.onchange = function() {
+				sel_pro_ban.innerHTML = "";
+				sel_pro_code.innerHTML = "";
+				if(this.value == '请选择车辆型号') {
+					return;
+				}
+				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findBbhByProjectAndXh', {
+					data: {
+						projectname: sel_pro_name.value,
+						anmodel: sel_pro_xh.value
+					},
+					type: 'post', //HTTP请求类型
+					success: function(data) {
+						addOption(sel_pro_ban, '请选择版本号', data.editioncodeList);
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+					}
+				});
+			}
+			//联动packagecode
+			sel_pro_ban.onchange = function() {
+				sel_pro_code.innerHTML = "";
+				if(this.value == '请选择版本号') {
+					return;
+				}
+				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findPcodeByPxb', {
+					data: {
+						projectname: sel_pro_name.value,
+						anmodel: sel_pro_xh.value,
+						editioncode: sel_pro_ban.value
+					},
+					type: 'post', //HTTP请求类型
+					success: function(data) {
+						addOption(sel_pro_code, '请选择packagecode', data.packagecodeList);
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+					}
+				});
+			}
+			//选择完packagecode后刷出对应的数据
+			sel_pro_code.onchange = function() {
+				data_init();
+			}
+
+			//四级联动创建option
+			function addOption(parent, op1_text, data) {
+				var option_1 = document.createElement('option');
+				option_1.innerHTML = op1_text;
+				parent.appendChild(option_1);
+				var list_string = String(data);
+				var list = list_string.split(",");
+				for(var i = 0, len = list.length; i < len; i++) {
+					var option = document.createElement('option');
+					option.value = list[i];
+					option.innerHTML = list[i];
+					parent.appendChild(option);
+				}
 			}
 
 			function xh_init() {
@@ -247,20 +304,9 @@
 					},
 					type: 'post', //HTTP请求类型
 					success: function(data) {
-						console.log("ajax=============")
-						console.log(data);
-						var list_string = String(data.anmodelList);
-						var list = list_string.split(",");
-						for(var i = 0, len = list.length; i < len; i++) {
-							//						console.log(list[i]);
-							var option = document.createElement('option');
-							option.value = list[i];
-							option.innerHTML = list[i];
-
-							sel_pro_xh.appendChild(option);
-							sel_pro_xh.value = plus.storage.getItem('xh_hb');
-							ban_init();
-						}
+						addOption(sel_pro_xh, '请选择车辆型号', data.anmodelList);
+						sel_pro_xh.value = plus.storage.getItem('xh_hb');
+						ban_init();
 					},
 					error: function(xhr, type, errorThrown) {
 						console.log(type);
@@ -280,20 +326,10 @@
 					},
 					type: 'post', //HTTP请求类型
 					success: function(data) {
-						console.log("ajax=============")
-						console.log(data);
-						var list_string = String(data.editioncodeList);
-						var list = list_string.split(",");
-						for(var i = 0, len = list.length; i < len; i++) {
-							//						console.log(list[i]);
-							var option = document.createElement('option');
-							option.value = list[i];
-							option.innerHTML = list[i];
 
-							sel_pro_ban.appendChild(option);
-							sel_pro_ban.value = plus.storage.getItem('ban_hb');
-							pCode_init();
-						}
+						addOption(sel_pro_ban, '请选择版本号', data.editioncodeList);
+						sel_pro_ban.value = plus.storage.getItem('ban_hb');
+						pCode_init();
 					},
 					error: function(xhr, type, errorThrown) {
 						console.log(type);
@@ -314,19 +350,10 @@
 					},
 					type: 'post', //HTTP请求类型
 					success: function(data) {
-						console.log("ajax=============")
-						console.log(data);
-						var list_string = String(data.packagecodeList);
-						var list = list_string.split(",");
-						for(var i = 0, len = list.length; i < len; i++) {
-							//						console.log(list[i]);
-							var option = document.createElement('option');
-							option.value = list[i];
-							option.innerHTML = list[i];
-							sel_pro_code.appendChild(option);
-							sel_pro_code.value = plus.storage.getItem('pCode_hb');
-							data_init();
-						}
+
+						addOption(sel_pro_code, '请选择packagecode', data.packagecodeList);
+						sel_pro_code.value = plus.storage.getItem('pCode_hb');
+						data_init();
 					},
 					error: function(xhr, type, errorThrown) {
 						console.log(type);
@@ -349,129 +376,10 @@
 					success: function(data) {
 						if(data.bdListBase.bdCarType == undefined) {
 							return;
-						}
-						console.log(data.imgurl);
-						console.log(data.bdListBase);
-						console.log(data.trueFileName);
-						//						console.log(data.bdDataList);
-						console.log(data.bdListBase.bdCarType);
+						}						
 						$("#sel_pro_carType").val(data.bdListBase.bdCarType);
-						tableShow();
-						local_img.setAttribute('src', imgpath + data.imgurl);
-						$('#z_textarea').text(data.bdListBase.bdMsg);
-						var isCompare = data.isCompare;
-						if(isCompare == '1') {
-							$('.hidden_btn').css({
-								visibility: 'hidden'
-							})
-						} else {
-							$('.hidden_btn').css({
-								visibility: 'visible'
-							})
-						}
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-					}
-				});
+						tableShow(data);
 
-			}
-
-			sel_pro_xh.onchange = function() {
-				sel_pro_ban.innerHTML = "";
-				sel_pro_code.innerHTML = "";
-				console.log(sel_pro_xh.value);
-				var option_1 = document.createElement('option');
-				option_1.innerHTML = '请选择版本号';
-				sel_pro_ban.appendChild(option_1);
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findBbhByProjectAndXh', {
-					data: {
-						projectname: sel_pro_name.value,
-						anmodel: sel_pro_xh.value
-					},
-					type: 'post', //HTTP请求类型
-					success: function(data) {
-						console.log("ajax=============")
-						console.log(data);
-						var list_string = String(data.editioncodeList);
-						var list = list_string.split(",");
-						for(var i = 0, len = list.length; i < len; i++) {
-							//						console.log(list[i]);
-							var option = document.createElement('option');
-							option.value = list[i];
-							option.innerHTML = list[i];
-
-							sel_pro_ban.appendChild(option);
-						}
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-
-					}
-				});
-			}
-
-			sel_pro_ban.onchange = function() {
-				sel_pro_code.innerHTML = "";
-				console.log(sel_pro_ban.value);
-				var option_1 = document.createElement('option');
-				option_1.innerHTML = '请选择packagecode';
-				sel_pro_code.appendChild(option_1);
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findPcodeByPxb', {
-					data: {
-						projectname: sel_pro_name.value,
-						anmodel: sel_pro_xh.value,
-						editioncode: sel_pro_ban.value
-					},
-					type: 'post', //HTTP请求类型
-					success: function(data) {
-						console.log("ajax=============")
-						console.log(data);
-						var list_string = String(data.packagecodeList);
-						var list = list_string.split(",");
-						for(var i = 0, len = list.length; i < len; i++) {
-							//						console.log(list[i]);
-							var option = document.createElement('option');
-							option.value = list[i];
-							option.innerHTML = list[i];
-							sel_pro_code.appendChild(option);
-						}
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-
-					}
-				});
-			}
-
-			sel_pro_code.onchange = function() {
-				mui.ajax(urlpath + '/a/dataCompare/bdEnv/appDataPrepare', {
-					data: {
-						projectname: sel_pro_name.value,
-						anmodel: sel_pro_xh.value,
-						editioncode: sel_pro_ban.value,
-						packagecode: sel_pro_code.value
-					},
-					type: 'post', //HTTP请求类型
-
-					success: function(data) {
-						console.log(data.imgurl);
-						console.log(data.bdListBase);
-						console.log(data.trueFileName);
-						var isCompare = data.isCompare;
-						if(isCompare == '1') {
-							$('.hidden_btn').css({
-								visibility: 'hidden'
-							})
-						} else {
-							$('.hidden_btn').css({
-								visibility: 'visible'
-							})
-						}
-						//						console.log(data.bdDataList);
-						tableShow();
-						local_img.setAttribute('src', imgpath + data.imgurl);
-						$('#z_textarea').text(data.bdListBase.bdMsg);
 					},
 					error: function(xhr, type, errorThrown) {
 						console.log(type);
@@ -481,61 +389,55 @@
 			}
 
 			//选择packageCode后 显示表格
-			function tableShow() {
+			function tableShow(data) {
 				z_tbody.innerHTML = '';
 				if(sel_pro_code.value != '' && sel_pro_code.value != '请选择packagecode') {
-					console.log(111);
+					bdid.value = data.bdid;
+					var tbody = "";
+					var data_msg = data.message;
+					var data_list = data.bdDataList;
+					//							var list = list_string.split(",");
+					for(var i = 0, len = data_list.length; i < len; i++) {
+						var prcode = data_list[i].prcode;
+						var prvalue = data_list[i].prvalue;
+						var prname = data_list[i].prname;
+						var prNum = data_list[i].prNum;
 
-					mui.ajax(urlpath + '/a/dataCompare/bdEnv/appDataPrepare', {
-						data: {
-							projectname: sel_pro_name.value,
-							anmodel: sel_pro_xh.value,
-							editioncode: sel_pro_ban.value,
-							packagecode: sel_pro_code.value
-						},
-						type: 'post', //HTTP请求类型
-
-						success: function(data) {
-							bdid.value = data.bdid;
-							var tbody = "";
-							var data_msg = data.message;
-							var data_list = data.bdDataList;
-							//							var list = list_string.split(",");
-							for(var i = 0, len = data_list.length; i < len; i++) {
-								var prcode = data_list[i].prcode;
-								var prvalue = data_list[i].prvalue;
-								var prname = data_list[i].prname;
-								var prNum = data_list[i].prNum;
-
-								if(typeof(prcode) == "undefined") {
-									prcode = "";
-								}
-								if(typeof(prvalue) == "undefined") {
-									prvalue = "";
-								}
-
-								if(typeof(prNum) == "undefined") {
-									prNum = "";
-								}
-
-								tbody = tbody + "<tr><td style='display:none'>" +
-									data.bdDataList[i].id + "</td><td>" +
-									prname + "</td><td style='display:none'>" +
-									prcode + "</td><td>" +
-									"<input style='width:90%; height: 30px;margin-top:14px;font-size:12px; background: rgba(0,0,0,0);' type='text' value='" +
-									prvalue + "'/></td><td style='display:none'>" +
-									prNum + "</td></tr>";
-
-							}
-
-							z_tbody.innerHTML = tbody;
-							mui.toast('数据加载成功');
-
-						},
-						error: function(xhr, type, errorThrown) {
-							console.log(type);
+						if(typeof(prcode) == "undefined") {
+							prcode = "";
 						}
-					});
+						if(typeof(prvalue) == "undefined") {
+							prvalue = "";
+						}
+
+						if(typeof(prNum) == "undefined") {
+							prNum = "";
+						}
+
+						tbody = tbody + "<tr><td style='display:none'>" +
+							data.bdDataList[i].id + "</td><td>" +
+							prname + "</td><td style='display:none'>" +
+							prcode + "</td><td>" +
+							"<input style='width:90%; height: 30px;margin-top:14px;font-size:12px; background: rgba(0,0,0,0);' type='text' value='" +
+							prvalue + "'/></td><td style='display:none'>" +
+							prNum + "</td></tr>";
+
+					}
+
+					z_tbody.innerHTML = tbody;
+					local_img.setAttribute('src', imgpath + data.imgurl);
+					$('#z_textarea').text(data.bdListBase.bdMsg);
+					var isCompare = data.isCompare;
+					if(isCompare == '1') {
+						$('.hidden_btn').css({
+							visibility: 'hidden'
+						})
+					} else {
+						$('.hidden_btn').css({
+							visibility: 'visible'
+						})
+					}
+					mui.toast('数据加载成功');
 
 				}
 
@@ -622,7 +524,7 @@
 					element.prname = $(this).find("td").eq(1).text();
 					element.prcode = $(this).find("td").eq(2).text();
 					element.prvalue = $(this).find("td").eq(3).find("input").val();
-					element.prNum = $(this).find("td").eq(4).find("input").val();
+					element.prNum = $(this).find("td").eq(4).text();
 					//					if(element.prcode=="hgz_remark"){
 					//						element.prvalue=$("#hgzRemark").val();
 					//					}
@@ -686,43 +588,9 @@
 						console.log(type);
 					}
 				});
-
 			}
 
 			///////////////////////图片拍照选取上传///////////////////////////
-			function plusReady() {
-				//本地存储
-				//												plus.storage.clear();
-				var pCode_hb = plus.storage.getItem("pCode_hb");
-
-				if(pCode_hb == null) {
-
-				} else {
-					console.log(pCode_hb);
-
-					sel_pro_name.value = plus.storage.getItem("pName_hb");
-					setTimeout(function() {
-						xh_init();
-					}, 200)
-
-				}
-
-				// 弹出系统选择按钮框  
-				mui("body").on("tap", ".imageup", function() {
-					page.imgUp();
-				})
-
-			}
-
-			//mui初始化
-			mui.init({
-				beforeback: function() {
-					plus.storage.setItem("pName_hb", sel_pro_name.value);
-					plus.storage.setItem("ban_hb", sel_pro_ban.value);
-					plus.storage.setItem("xh_hb", sel_pro_xh.value);
-					plus.storage.setItem("pCode_hb", sel_pro_code.value);
-				}
-			});
 
 			var page = null;
 			page = {

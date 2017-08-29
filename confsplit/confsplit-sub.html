@@ -6,6 +6,22 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			#cbtn,
+			#qbtn {
+				width: 80px;
+				background: #4092c4;
+				border: 1px solid #4092c4;
+				margin: 0 10px;
+			}
+			
+			#qmodel,
+			#qgroup {
+				height: 35px;
+				border-radius: 5px;
+				border: 1px solid #ccc;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -20,12 +36,12 @@
 				private String ANGroup;//批次
 				private String issuedDate;//发布日期
 				private String zwpp;//中文品牌-->
-				<div class="" style="width: 100%;padding-left: 25px;">
+				<div class="" style="width: 100%;padding-left: 25px; padding-top: 20px;">
 					车辆型号：<input id="qmodel" class="mui-col-sm-2" /><span style="padding-left: 5px;">批次：</span><input id="qgroup" class="mui-col-sm-2" />
 					<button id="cbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-search mui-col-sm-2">
 		                                        查询
 		        	</button>
-		        	<button id="qbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-clear mui-col-sm-2">
+					<button id="qbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-clear mui-col-sm-2">
 		                                        清空
 		        	</button>
 				</div>
@@ -96,7 +112,7 @@
 				setTimeout(function() {
 					page = 1;
 					//http://114.115.212.225:8080/jeesite/a/BaseDataCheck/Announcement/AppAnList?ANGroup=&&ANModel=SVW71612CH&pageNo=1&&pageSize=5
-					var url = urlpath + '/a/BaseDataCheck/Announcement/AppAnList?ANGroup='+qgroup+'&ANModel='+qmodel+'&pageNo=' + page + '&pageSize=' + pageSize;
+					var url = urlpath + '/a/BaseDataCheck/Announcement/AppAnList?ANGroup=' + qgroup + '&ANModel=' + qmodel + '&pageNo=' + page + '&pageSize=' + pageSize;
 					console.log(url);
 					mui.getJSON(url, {}, function(data) {
 						console.log(JSON.stringify(data));
@@ -125,8 +141,8 @@
 				var qmodel = document.getElementById("qmodel").value;
 				var qgroup = document.getElementById("qgroup").value;
 				setTimeout(function() {
-					var url = urlpath + '/a/BaseDataCheck/Announcement/AppAnList?ANGroup='+qgroup+'&ANModel='+qmodel+'&pageNo=' + page + '&pageSize=' + pageSize;
-//					var url = urlpath + '/a/BaseDataCheck/Announcement/AppAnList?pageNo=' + page + '&pageSize=' + pageSize;
+					var url = urlpath + '/a/BaseDataCheck/Announcement/AppAnList?ANGroup=' + qgroup + '&ANModel=' + qmodel + '&pageNo=' + page + '&pageSize=' + pageSize;
+					//					var url = urlpath + '/a/BaseDataCheck/Announcement/AppAnList?pageNo=' + page + '&pageSize=' + pageSize;
 					console.log(url);
 					mui.getJSON(url, {}, function(data) {
 						var ul = document.querySelector('.mui-table-view');
@@ -154,6 +170,16 @@
 					count = len;
 				}
 				for(var i = 0; i < count; i++) {
+
+					//去除undefined
+					for(var j in data.rDate[i]) {
+						//						console.log(data.rDate[i][j]);
+						console.log(j);
+						if(data.rDate[i][j] == undefined || data.rDate[i][j] == null) {
+							data.rDate[i][j] = '-';
+						}
+					}
+
 					li = document.createElement('li');
 					li.id = data.rDate[i].id
 					li.className = 'mui-table-view-cell';

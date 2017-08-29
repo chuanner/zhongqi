@@ -365,7 +365,8 @@
 				"resources": [
 					"js/mui.min.js",
 					"css/mui.min.css",
-					"js/mui.pullToRefresh.js"
+					"js/mui.pullToRefresh.js",
+					"fonts/mui.ttf"
 				],
 				"refer": [
 					"coc/coc-args-main.html"
@@ -415,7 +416,8 @@
 				"resources": [
 					"js/mui.min.js",
 					"css/mui.min.css",
-					"js/mui.pullToRefresh.js"
+					"js/mui.pullToRefresh.js",
+					"fonts/mui.ttf"
 				],
 				"refer": [
 					"qtrip/qtrip-args-main.html"
@@ -446,7 +448,8 @@
 					"js/mui.min.js",
 					"css/mui.min.css",
 					"js/mui.pullToRefresh.js",
-					"fonts/mui.ttf"
+					"fonts/mui.ttf",
+					"css/common.css"
 				],
 				"refer": [],
 				"priority": 0
@@ -794,7 +797,8 @@
 			"pagecode/pagecode-main.html": {
 				"resources": [
 					"js/mui.min.js",
-					"css/mui.min.css"
+					"css/mui.min.css",
+					"fonts/mui.ttf"
 				],
 				"refer": [
 					"pagecode/pagecode-sub.html"
@@ -805,7 +809,11 @@
 				"resources": [
 					"js/mui.pullToRefresh.js",
 					"js/mui.min.js",
-					"css/mui.min.css"
+					"css/mui.min.css",
+					"js/mui.previewimage.js",
+					"css/preview_image.css",
+					"js/mui.zoom.js",
+					"js/jquery-3.1.1.js"
 				],
 				"refer": [
 					"pagecode/uploader.html"
@@ -819,7 +827,9 @@
 					"js/mui.min.js",
 					"fonts/mui.ttf",
 					"css/mui.min.css",
-					"js/mui.previewimage.js"
+					"js/mui.previewimage.js",
+					"images/4.jpg",
+					"images/add.png"
 				],
 				"refer": [
 					"pagecode/page-sub.html"

@@ -84,7 +84,7 @@ header {
 .dcontent {
 	text-align: center;
 	padding-top: 44px;
-	padding-bottom: 80px;
+	/*padding-bottom: 80px;*/
 }
 
 .sdcontent {
@@ -118,10 +118,12 @@ header {
 }
 
 .button {
+	width: 150px;
 	font-size: 18px;
 	font-weight: normal;
 	text-decoration: none;
 	display: block;
+	margin: 0 auto;
 	text-align: center;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -130,7 +132,7 @@ header {
 	background-color: #FFCC33;
 	border: 1px solid #ECB100;
 	padding: .5em 0em;
-	margin: .5em .7em;
+	/*margin: .5em .7em;*/
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
 }

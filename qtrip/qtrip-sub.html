@@ -13,6 +13,20 @@
 				overflow: hidden;
 				width: -webkit-max-content;
 			}
+			
+			#cbtn,
+			#qbtn {
+				width: 80px;
+				background: #4092c4;
+				border: 1px solid #4092c4;
+				margin: 0 10px;
+			}
+			
+			#qmodel {
+				height: 35px;
+				border-radius: 5px;
+				border: 1px solid #ccc;
+			}
 		</style>
 	</head>
 
@@ -31,7 +45,7 @@
 			    public String suburbFuelConsumption;//市郊工况油耗
 			    public String generalFuelConsumption;//综合工况油耗
 				public String releaseData;//公告日期-->
-				<div class="" style="width: 100%;padding-left: 25px;">
+				<div class="" style="width: 100%;padding-left: 25px;padding-top: 20px;">
 					车辆型号：<input id="qmodel" class="mui-col-sm-3" />
 					<button id="cbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-search mui-col-sm-2">
 		                                        查询
@@ -92,7 +106,7 @@
 				var veModel = document.getElementById("qmodel").value;
 				setTimeout(function() {
 					page = 1;
-					var url = urlpath + '/a/BaseDataCheck/Fuel/APPlist?veModel='+veModel+'&pageNo=' + page + '&pageSize=' + pageSize;
+					var url = urlpath + '/a/BaseDataCheck/Fuel/APPlist?veModel=' + veModel + '&pageNo=' + page + '&pageSize=' + pageSize;
 					console.log(url);
 					mui.getJSON(url, {}, function(data) {
 						console.log(JSON.stringify(data));
@@ -120,8 +134,8 @@
 			function pullupRefresh() {
 				var veModel = document.getElementById("qmodel").value;
 				setTimeout(function() {
-					var url = urlpath + '/a/BaseDataCheck/Fuel/APPlist?veModel='+veModel+'&pageNo=' + page + '&pageSize=' + pageSize;
-//					var url = urlpath + '/a/BaseDataCheck/Fuel/APPlist?pageNo=' + page + '&pageSize=' + pageSize;
+					var url = urlpath + '/a/BaseDataCheck/Fuel/APPlist?veModel=' + veModel + '&pageNo=' + page + '&pageSize=' + pageSize;
+					//					var url = urlpath + '/a/BaseDataCheck/Fuel/APPlist?pageNo=' + page + '&pageSize=' + pageSize;
 					console.log(url);
 					mui.getJSON(url, {}, function(data) {
 						var ul = document.querySelector('.mui-table-view');

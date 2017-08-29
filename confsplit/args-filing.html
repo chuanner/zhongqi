@@ -106,7 +106,7 @@
 	<body>
 		<div class="mui-content">
 			<div id="slider" class="mui-slider mui-fullscreen">
-				<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="height: 44px;background: #4092c4;">
+				<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="height: 44px;">
 					<div class="mui-scroll" style="width: 100%;padding-top: 5px;font-size: 16px;">
 						<a class="mui-control-item mui-active" href="#item1mobile" style="width: 45%;">
 							公告参数
@@ -318,11 +318,11 @@
 							li.innerHTML =
 								'<span id="order" style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + parseInt(pageSize * (filingpage - 1) + i + 1) + '</span>' +
 								'<span style="float: left;text-align: center;" class="mui-col-sm-3 mui-ellipsis">' + data.rDate[i].reprnum + '</span>' +
-//								'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].singleData + '</span>' +
+								//								'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].singleData + '</span>' +
 								'<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">' + data.rDate[i].reprname + '</span>' +
-//								'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].reintername + '</span>' +
-//								'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].multipleData + '</span>' +
-//								'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].singleData + '</span>' +
+								//								'<span style="float: left;text-align: center;" class="mui-col-sm-2 mui-ellipsis">' + data.rDate[i].reintername + '</span>' +
+								//								'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].multipleData + '</span>' +
+								//								'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + data.rDate[i].singleData + '</span>' +
 								'<span style="float: left;text-align: center;" class="mui-col-sm-4 mui-ellipsis">' + data.rDate[i].revalue + '</span>';
 							fragment.appendChild(li);
 						}
@@ -338,6 +338,16 @@
 							count = len;
 						}
 						for(var i = 0; i < count; i++) {
+							
+							//去除undefined
+							for(var j in data.rDate[i]) {
+//														console.log(data.rDate[i][j]);
+								console.log(j);
+								if(data.rDate[i][j] == false ) {
+									data.rDate[i][j] = '-';
+//									console.log(data.rDate[i].cerName);
+								}
+							}
 							li = document.createElement('li');
 							li.id = data.rDate[i].id
 							li.className = 'mui-table-view-cell';

@@ -13,23 +13,38 @@
 				overflow: hidden;
 				width: -webkit-max-content;
 			}
+			
+			#cbtn,
+			#qbtn {
+				width: 80px;
+				background: #4092c4;
+				border: 1px solid #4092c4;
+				margin: 0 10px;
+			}
+			
+			#qmodel,
+			#informationNum {
+				height: 35px;
+				border-radius: 5px;
+				border: 1px solid #ccc;
+			}
 		</style>
 	</head>
 
 	<body>
 		<div id="pullrefresh" class="mui-content mui-scroll-wrapper mui-card">
 			<div class="mui-scroll">
-			<!--public String informationNum;//信息公开编号
+				<!--public String informationNum;//信息公开编号
 		    public String veModel;//车辆型号
 		    public String engineModel;//发动机型号
 			public String openTime;//公开时间-->
-				<div class="" style="width: 100%;padding-left: 25px;">
+				<div class="" style="width: 100%;padding-left: 25px;padding-top: 20px;">
 					<!--车辆型号：<input id="qmodel" class="mui-col-sm-3" />-->
 					信息公开编号：<input id="informationNum" class="mui-col-sm-2" /><span style="padding-left: 5px;">车辆型号：</span><input id="qmodel" class="mui-col-sm-2" />
 					<button id="cbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-search mui-col-sm-2">
 		                                        查询
 		        	</button>
-		        	<button id="qbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-clear mui-col-sm-2">
+					<button id="qbtn" type="button" class="mui-btn mui-btn-primary mui-icon mui-icon-clear mui-col-sm-2">
 		                                        清空
 		        	</button>
 				</div>
@@ -55,7 +70,7 @@
 				pullRefresh: {
 					container: '#pullrefresh',
 					down: {
-//						auto: true, //可选,默认false.首次加载自动下拉刷新一次
+						//						auto: true, //可选,默认false.首次加载自动下拉刷新一次
 						contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
 						contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
 						contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
@@ -79,7 +94,7 @@
 				var informationNum = document.getElementById("informationNum").value;
 				setTimeout(function() {
 					page = 1;
-					var url = urlpath + '/a/BaseDataCheck/Environment/APPlist?veModel='+veModel+ '&informationNum='+informationNum+'&pageNo=' + page + '&pageSize=' + pageSize;
+					var url = urlpath + '/a/BaseDataCheck/Environment/APPlist?veModel=' + veModel + '&informationNum=' + informationNum + '&pageNo=' + page + '&pageSize=' + pageSize;
 					console.log(url);
 					mui.getJSON(url, {}, function(data) {
 						console.log(JSON.stringify(data));
@@ -108,8 +123,8 @@
 				var veModel = document.getElementById("qmodel").value;
 				var informationNum = document.getElementById("informationNum").value;
 				setTimeout(function() {
-					var url = urlpath + '/a/BaseDataCheck/Environment/APPlist?veModel='+veModel+ '&informationNum='+informationNum+'&pageNo=' + page + '&pageSize=' + pageSize;
-//					var url = urlpath + '/a/BaseDataCheck/Environment/APPlist?pageNo=' + page + '&pageSize=' + pageSize;
+					var url = urlpath + '/a/BaseDataCheck/Environment/APPlist?veModel=' + veModel + '&informationNum=' + informationNum + '&pageNo=' + page + '&pageSize=' + pageSize;
+					//					var url = urlpath + '/a/BaseDataCheck/Environment/APPlist?pageNo=' + page + '&pageSize=' + pageSize;
 					console.log(url);
 					mui.getJSON(url, {}, function(data) {
 						var ul = document.querySelector('.mui-table-view');
