@@ -74,6 +74,8 @@
 			</div>
 
 			<div class="mui-button-row z_btn_1 hidden_btn">
+				<button onclick="syncDropDown()" type="button" class="mui-btn mui-btn-blue mui-btn-outlined">同步数据</button>
+				
 				<button onclick="clickCamera()" type="button" class="mui-btn mui-btn-blue mui-btn-outlined">拍照</button>
 
 				<button onclick="txsb()" type="button" class="mui-btn mui-btn-blue mui-btn-outlined">图像识别</button>
@@ -167,137 +169,152 @@
 
 			var txsb_can = false;
 
-			mui.ajax(urlpath + '/a/dataCompare/bdHgz/findProjnameList', {
-				//				data: {
-				//					username: 'username',
-				//					password: 'password'
-				//				},
-				type: 'post', //HTTP请求类型
-				
-				success: function(data) {
-					console.log("ajax=============")
+			function initProjectname()
+			{
+			   if(checkNet()==false){
+					console.log("use cach");
 					var option_1 = document.createElement('option');
-					option_1.innerHTML = '请选择项目名称';
-					sel_pro_name.appendChild(option_1);
-					var list_string = String(data.projnameList);
-					var list = list_string.split(",");
-					for(var i = 0, len = list.length; i < len; i++) {
-						//						console.log(list[i]);
-						var option = document.createElement('option');
-						option.value = list[i];
-						option.innerHTML = list[i];
-
-						sel_pro_name.appendChild(option);
-
+					 option_1.innerHTML = '请选择项目名称';
+					 sel_pro_name.appendChild(option_1);
+					 var list_string = String(findProjnameList());
+					 var list = list_string.split(",");
+					 for(var i = 0, len = list.length; i < len; i++) {
+								//						console.log(list[i]);
+								var option = document.createElement('option');
+								option.value = list[i];
+								option.innerHTML = list[i];
+								sel_pro_name.appendChild(option);
+		
 					}
-				},
-				error: function(xhr, type, errorThrown) {
-					console.log(type);
-
+			   }
+			   else
+			   {
+				   	 mui.ajax(urlpath + '/a/dataCompare/bdHgz/findProjnameList', {
+						//				data: {
+						//					username: 'username',
+						//					password: 'password'
+						//				},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							console.log("ajax=============")
+							var option_1 = document.createElement('option');
+							option_1.innerHTML = '请选择项目名称';
+							sel_pro_name.appendChild(option_1);
+							var list_string = String(data.projnameList);
+							var list = list_string.split(",");
+							for(var i = 0, len = list.length; i < len; i++) {
+								//						console.log(list[i]);
+								var option = document.createElement('option');
+								option.value = list[i];
+								option.innerHTML = list[i];
+		
+								sel_pro_name.appendChild(option);
+		
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+		
+						}
+					});
+	           }
+		   }
+			function addOption(parent, op1_text, data) {
+				var option_1 = document.createElement('option');
+				option_1.innerHTML = op1_text;
+				parent.appendChild(option_1);
+				var list_string = String(data);
+				var list = list_string.split(",");
+				for(var i = 0, len = list.length; i < len; i++) {
+					var option = document.createElement('option');
+					option.value = list[i];
+					option.innerHTML = list[i];
+					parent.appendChild(option);
 				}
-			});
+			}
 
 			function xh_init() {
 				sel_pro_ban.innerHTML = "";
 				sel_pro_xh.innerHTML = "";
 				sel_pro_code.innerHTML = "";
-				console.log(sel_pro_name.value);
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findXhByProjectname', {
-					data: {
-						projectname: sel_pro_name.value
-					},
-					type: 'post', //HTTP请求类型
-					
-					success: function(data) {
-						console.log("ajax=============")
-						console.log(data);
-						var list_string = String(data.anmodelList);
-						var list = list_string.split(",");
-						for(var i = 0, len = list.length; i < len; i++) {
-							//						console.log(list[i]);
-							var option = document.createElement('option');
-							option.value = list[i];
-							option.innerHTML = list[i];
-
-							sel_pro_xh.appendChild(option);
-							sel_pro_xh.value = plus.storage.getItem('xh_yh');
+				if(checkNet()==false){
+					addOption(sel_pro_xh, '请选择车辆型号', findXhByProjectname(sel_pro_name.value));
+					sel_pro_xh.value = plus.storage.getItem('xh_hgz');
+					ban_init();
+				}
+				else
+				{
+					mui.ajax(urlpath + '/a/dataCompare/bdHgz/findXhByProjectname', {
+						data: {
+							projectname: sel_pro_name.value
+						},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							addOption(sel_pro_xh, '请选择车辆型号', data.anmodelList);
+							sel_pro_xh.value = plus.storage.getItem('xh_hgz');
 							ban_init();
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
 						}
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-
-					}
-				});
-
+					});
+				}
 			}
-
+			//缓存版本号
 			function ban_init() {
 				sel_pro_ban.innerHTML = "";
 				sel_pro_code.innerHTML = "";
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findBbhByProjectAndXh', {
-					data: {
-						projectname: sel_pro_name.value,
-						anmodel: sel_pro_xh.value
-					},
-					type: 'post', //HTTP请求类型
-					
-					success: function(data) {
-						console.log("ajax=============")
-						console.log(data);
-						var list_string = String(data.editioncodeList);
-						var list = list_string.split(",");
-						for(var i = 0, len = list.length; i < len; i++) {
-							//						console.log(list[i]);
-							var option = document.createElement('option');
-							option.value = list[i];
-							option.innerHTML = list[i];
-
-							sel_pro_ban.appendChild(option);
-							sel_pro_ban.value = plus.storage.getItem('ban_yh');
+				if(checkNet()==false){
+				    addOption(sel_pro_ban, '请选择版本号', findBbhByProjectAndXh(sel_pro_name.value,sel_pro_xh.value));
+					sel_pro_ban.value = plus.storage.getItem('ban_hgz');
+					pCode_init();
+				}
+				else
+				{				
+					mui.ajax(urlpath + '/a/dataCompare/bdHgz/findBbhByProjectAndXh', {
+						data: {
+							projectname: sel_pro_name.value,
+							anmodel: sel_pro_xh.value
+						},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							addOption(sel_pro_ban, '请选择版本号', data.editioncodeList);
+							sel_pro_ban.value = plus.storage.getItem('ban_hgz');
 							pCode_init();
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
 						}
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-
-					}
-				});
-
+					});
+				}
 			}
-
+			//缓存packagecode
 			function pCode_init() {
 				sel_pro_code.innerHTML = "";
-				console.log(sel_pro_ban.value);
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findPcodeByPxb', {
-					data: {
-						projectname: sel_pro_name.value,
-						anmodel: sel_pro_xh.value,
-						editioncode: sel_pro_ban.value
-					},
-					type: 'post', //HTTP请求类型
-					
-					success: function(data) {
-						console.log("ajax=============")
-						console.log(data);
-						var list_string = String(data.packagecodeList);
-						var list = list_string.split(",");
-						for(var i = 0, len = list.length; i < len; i++) {
-							//						console.log(list[i]);
-							var option = document.createElement('option');
-							option.value = list[i];
-							option.innerHTML = list[i];
-							sel_pro_code.appendChild(option);
-							sel_pro_code.value = plus.storage.getItem('pCode_yh');
+				if(checkNet()==false){
+					 addOption(sel_pro_code, '请选择packagecode', findPcodeByPxb(sel_pro_name.value,sel_pro_xh.value,sel_pro_ban.value));
+					 sel_pro_code.value = plus.storage.getItem('pCode_hgz');
+					 data_init();					
+				}
+				else
+				{
+					mui.ajax(urlpath + '/a/dataCompare/bdHgz/findPcodeByPxb', {
+						data: {
+							projectname: sel_pro_name.value,
+							anmodel: sel_pro_xh.value,
+							editioncode: sel_pro_ban.value
+						},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							addOption(sel_pro_code, '请选择packagecode', data.packagecodeList);
+							sel_pro_code.value = plus.storage.getItem('pCode_hgz');
 							data_init();
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
 						}
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-
-					}
-				});
-
+					});
+				}
 			}
 
 			function data_init() {
@@ -337,145 +354,90 @@
 
 			}
 
+//联动车辆型号
 			sel_pro_name.onchange = function() {
-				sel_pro_ban.innerHTML = "";
 				sel_pro_xh.innerHTML = "";
+				sel_pro_ban.innerHTML = "";
 				sel_pro_code.innerHTML = "";
-				console.log(sel_pro_name.value);
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findXhByProjectname', {
-					data: {
-						projectname: sel_pro_name.value
-					},
-					type: 'post', //HTTP请求类型
-					
-					success: function(data) {
-						console.log("ajax=============")
-						console.log(data);
-						var option_1 = document.createElement('option');
-						option_1.innerHTML = '请选择车辆型号';
-						sel_pro_xh.appendChild(option_1);
-						var list_string = String(data.anmodelList);
-						var list = list_string.split(",");
-						for(var i = 0, len = list.length; i < len; i++) {
-							//						console.log(list[i]);
-							var option = document.createElement('option');
-							option.value = list[i];
-							option.innerHTML = list[i];
-
-							sel_pro_xh.appendChild(option);
+				if(this.value == '请选择项目名称') {
+					return;
+				}
+				if(checkNet()==false){
+					addOption(sel_pro_xh, '请选择车辆型号', findXhByProjectname(sel_pro_name.value));
+				}
+				else
+				{
+					mui.ajax(urlpath + '/a/dataCompare/bdHgz/findXhByProjectname', {
+						data: {
+							projectname: sel_pro_name.value
+						},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							addOption(sel_pro_xh, '请选择车辆型号', data.anmodelList);
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
 						}
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-
-					}
-				});
+					});
+				}
 			}
-
+			//联动版本号
 			sel_pro_xh.onchange = function() {
 				sel_pro_ban.innerHTML = "";
 				sel_pro_code.innerHTML = "";
-				console.log(sel_pro_xh.value);
-				var option_1 = document.createElement('option');
-				option_1.innerHTML = '请选择版本号';
-				sel_pro_ban.appendChild(option_1);
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findBbhByProjectAndXh', {
-					data: {
-						projectname: sel_pro_name.value,
-						anmodel: sel_pro_xh.value
-					},
-					type: 'post', //HTTP请求类型
-					
-					success: function(data) {
-						console.log("ajax=============")
-						console.log(data);
-						var list_string = String(data.editioncodeList);
-						var list = list_string.split(",");
-						for(var i = 0, len = list.length; i < len; i++) {
-							//						console.log(list[i]);
-							var option = document.createElement('option');
-							option.value = list[i];
-							option.innerHTML = list[i];
-
-							sel_pro_ban.appendChild(option);
+				if(this.value == '请选择车辆型号') {
+					return;
+				}
+				if(checkNet()==false){
+					addOption(sel_pro_ban, '请选择版本号', findBbhByProjectAndXh(sel_pro_name.value,sel_pro_xh.value));
+				}
+				else
+				{
+					mui.ajax(urlpath + '/a/dataCompare/bdHgz/findBbhByProjectAndXh', {
+						data: {
+							projectname: sel_pro_name.value,
+							anmodel: sel_pro_xh.value
+						},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							addOption(sel_pro_ban, '请选择版本号', data.editioncodeList);
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
 						}
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-
-					}
-				});
+					});
+				}
 			}
-
+			//联动packagecode
 			sel_pro_ban.onchange = function() {
 				sel_pro_code.innerHTML = "";
-				console.log(sel_pro_ban.value);
-				var option_1 = document.createElement('option');
-				option_1.innerHTML = '请选择packagecode';
-				sel_pro_code.appendChild(option_1);
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findPcodeByPxb', {
-					data: {
-						projectname: sel_pro_name.value,
-						anmodel: sel_pro_xh.value,
-						editioncode: sel_pro_ban.value
-					},
-					type: 'post', //HTTP请求类型
-					
-					success: function(data) {
-						console.log("ajax=============")
-						console.log(data);
-						var list_string = String(data.packagecodeList);
-						var list = list_string.split(",");
-						for(var i = 0, len = list.length; i < len; i++) {
-							//						console.log(list[i]);
-							var option = document.createElement('option');
-							option.value = list[i];
-							option.innerHTML = list[i];
-							sel_pro_code.appendChild(option);
+				if(this.value == '请选择版本号') {
+					return;
+				}
+				if(checkNet()==false){
+					addOption(sel_pro_code, '请选择packagecode', findPcodeByPxb(sel_pro_name.value,sel_pro_xh.value,sel_pro_ban.value));
+				}
+				else
+				{			
+					mui.ajax(urlpath + '/a/dataCompare/bdHgz/findPcodeByPxb', {
+						data: {
+							projectname: sel_pro_name.value,
+							anmodel: sel_pro_xh.value,
+							editioncode: sel_pro_ban.value
+						},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							addOption(sel_pro_code, '请选择packagecode', data.packagecodeList);
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
 						}
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-
-					}
-				});
+					});
+			    }
 			}
-
+			//选择完packagecode后刷出对应的数据
 			sel_pro_code.onchange = function() {
-				mui.ajax(urlpath + '/a/dataCompare/bdFuel/appDataPrepare', {
-					data: {
-						projectname: sel_pro_name.value,
-						anmodel: sel_pro_xh.value,
-						editioncode: sel_pro_ban.value,
-						packagecode: sel_pro_code.value
-					},
-					type: 'post', //HTTP请求类型
-					
-					success: function(data) {
-						console.log('chenggong');
-						//						console.log(data.imgurl);
-						console.log(data.bdListBase);
-						console.log(data.trueFileName);
-						var isCompare = data.isCompare;
-						if(isCompare == '1') {
-							$('.hidden_btn').css({
-								visibility: 'hidden'
-							})
-						} else {
-							$('.hidden_btn').css({
-								visibility: 'visible'
-							})
-						}
-						//						console.log(data.bdDataList);
-						tableShow();
-						local_img.setAttribute('src', imgpath + data.imgurl);
-						$('#z_textarea').text(data.bdListBase.bdMsg);
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-					}
-				});
-
+				data_init();
 			}
 
 			//选择packageCode后 显示表格
@@ -701,6 +663,7 @@
 
 					sel_pro_name.value = plus.storage.getItem("pName_yh");
 					setTimeout(function() {
+						initProjectname();
 						xh_init();
 					}, 200)
 

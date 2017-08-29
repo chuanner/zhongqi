@@ -36,19 +36,11 @@
 			.mui-active {
 				background: #fff !important;
 			}
-			#xzc_car_type{
-				height: 30px;
-				line-height: 40px;
-				color: #4092c4;
-				text-align: center;
-			}
 		</style>
 	</head>
 
 	<body>
-		
 		<div id="pullrefresh" class="mui-content mui-scroll-wrapper mui-card" style="height: 100%;">
-			<p id="xzc_car_type"></p>
 			<div class="mui-scroll">
 				<ul id="ul1" class="mui-table-view">
 					<li class="mui-table-view-cell" style="width: 100%;background: #4092c4; color: #fff;">
@@ -108,10 +100,7 @@
 						}
 					}
 				}
-				var self = plus.webview.currentWebview();
-				var xzc_carType = self.xzc_ct;
-				console.log(xzc_carType);
-				document.getElementById('xzc_car_type').innerHTML = '车辆型号：' + xzc_carType;
+
 				plus.screen.lockOrientation("landscape-primary");
 				var wv = plus.webview.currentWebview();
 				var ids = wv.id;
@@ -141,64 +130,139 @@
 						}
 					}
 				});
-				/**
-				 * 下拉刷新具体业务实现
-				 */
-				function pulldownRefresh() {
-					console.log("下拉刷新");
+				
+				function showHistory()
+				{
+					console.log("load history 3");
 					setTimeout(function() {
-						page1 = 1;
-						page2 = 1;
-						var url = urlpath + '/a/configuration_rule/tcConfigurationRule/appshow?pagecode=' + pagecode + '&anid=' + anid + '&csid=' + csid + '&editioncode=' + editioncode + '&pageNo=' + page1 + '&pageSize=' + pageSize;
-						console.log(url);
-						mui.getJSON(url, {}, function(data) {
-							console.log(JSON.stringify(data));
-							//							var ul = document.querySelector('.mui-table-view');
+					var data;
+		            var strData = localStorage.getItem("appshow"+ids);
+		            console.log(ids);
+		            console.log(strData);
+		            if(strData==null)
+		            {
+		                data = {};
+		                data.rPageCount=0;
+		                data.rDate=[];
+		            }else{
+		                data = JSON.parse(strData);		                    				
+		            }
+					var data2;
+		            var strData2 = localStorage.getItem("appshow2"+ids);
+		            if(strData2==null)
+		            {
+		                data2 = {};
+		                data2.rPageCount=0;
+		                data2.rDate=[];
+		            }else{
+		                data2 = JSON.parse(strData2);		                    				
+		            }						 
+					 
+						 
+					if(data){
 							var ul = document.getElementById("ul1");
 							var len = ul.childElementCount;
-							console.log(len);
-							console.log(ul.childNodes.length);
 							//下拉刷新前清空子ul节点
 							for(var i = ul.childNodes.length - 1; i >= 2; i--) {
 								ul.removeChild(ul.childNodes[i]);
 							}
-							console.log(ul.childNodes.length);
 							if(data.rDate.length != '0') {
-								ul.appendChild(createFragment(ul, pageSize, data));
+								ul.appendChild(createFragment(ul, data.rDate.length, data));
 							}
 							mui('#pullrefresh').pullRefresh().refresh(true);
 							mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
-							page1 = 2;
-						});
+						}
 
-						var url2 = urlpath + '/a/configuration_rule/tcConfigurationRule/appshow2?pagecode=' + pagecode + '&anid=' + anid + '&csid=' + csid + '&editioncode=' + editioncode + '&pageNo=' + page2 + '&pageSize=' + pageSize;
-						console.log(url2);
-						mui.getJSON(url2, {}, function(data) {
-							console.log(JSON.stringify(data));
-							//							var ul = document.querySelector('.mui-table-view');
+						if(data2)
+						{
 							var ul2 = document.getElementById("ul2");
 							var len = ul2.childElementCount;
-							console.log(len);
-							console.log(ul2.childNodes.length);
 							//下拉刷新前清空子ul节点
 							for(var i = ul2.childNodes.length - 1; i >= 2; i--) {
 								ul2.removeChild(ul2.childNodes[i]);
 							}
-							console.log(ul2.childNodes.length);
-							if(data.rDate.length != '0') {
-								ul2.appendChild(createFragment2(ul2, pageSize, data));
+							if(data2.rDate.length != '0') {
+								ul2.appendChild(createFragment2(ul2, data2.rDate.length, data2));
 							}
 							mui('#pullrefresh').pullRefresh().refresh(true);
 							mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
-							page2 = 2;
-						});
+						}
 					}, 1500);
-					//					page = 2;
+					//					page = 2;					
+					
+					
+				}
+				
+				/**
+				 * 下拉刷新具体业务实现
+				 */
+				function pulldownRefresh() {
+				  if(checkNet()==false){
+						showHistory();
+				  }
+				  else
+				  {
+						console.log("下拉刷新");
+						setTimeout(function() {
+							page1 = 1;
+							page2 = 1;
+							var url = urlpath + '/a/configuration_rule/tcConfigurationRule/appshow?pagecode=' + pagecode + '&anid=' + anid + '&csid=' + csid + '&editioncode=' + editioncode + '&pageNo=' + page1 + '&pageSize=' + pageSize;
+							console.log("appshow"+url);
+							mui.getJSON(url, {}, function(data) {
+								console.log(JSON.stringify(data));
+								//							var ul = document.querySelector('.mui-table-view');
+								var ul = document.getElementById("ul1");
+								var len = ul.childElementCount;
+								console.log(len);
+								console.log(ul.childNodes.length);
+								//下拉刷新前清空子ul节点
+								for(var i = ul.childNodes.length - 1; i >= 2; i--) {
+									ul.removeChild(ul.childNodes[i]);
+								}
+								console.log(ul.childNodes.length);
+								if(data.rDate.length != '0') {
+									ul.appendChild(createFragment(ul, pageSize, data));
+								}
+								mui('#pullrefresh').pullRefresh().refresh(true);
+								mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+								page1 = 2;
+	
+							});
+	
+							var url2 = urlpath + '/a/configuration_rule/tcConfigurationRule/appshow2?pagecode=' + pagecode + '&anid=' + anid + '&csid=' + csid + '&editioncode=' + editioncode + '&pageNo=' + page2 + '&pageSize=' + pageSize;
+							console.log("appshow2"+url2);
+							mui.getJSON(url2, {}, function(data) {
+								console.log(JSON.stringify(data));
+								//							var ul = document.querySelector('.mui-table-view');
+								var ul2 = document.getElementById("ul2");
+								var len = ul2.childElementCount;
+								console.log(len);
+								console.log(ul2.childNodes.length);
+								//下拉刷新前清空子ul节点
+								for(var i = ul2.childNodes.length - 1; i >= 2; i--) {
+									ul2.removeChild(ul2.childNodes[i]);
+								}
+								console.log(ul2.childNodes.length);
+								if(data.rDate.length != '0') {
+									ul2.appendChild(createFragment2(ul2, pageSize, data));
+								}
+								mui('#pullrefresh').pullRefresh().refresh(true);
+								mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+								page2 = 2;
+							});
+						}, 1500);
+						//					page = 2;
+					}
 				}
 				/**
 				 * 上拉加载具体业务实现
 				 */
 				function pullupRefresh() {
+				  if(checkNet()==false){
+						showHistory();
+				  }
+				  else
+				  {
 					console.log("开始上拉：" + page1);
 					console.log("开始上拉：" + page2);
 					setTimeout(function() {
@@ -240,7 +304,7 @@
 						mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
 						//						page++;
 					}, 1500);
-
+                }
 				}
 
 				var createFragment = function(ul, count, data) {
@@ -252,14 +316,11 @@
 						count = len;
 					}
 					for(var i = 0; i < count; i++) {
-//						console.log(data.rDate[i].remark);
+						console.log(data.rDate[i].remark);
 						//						console.log("fbid=" + data.rDate[i].id);
 						//						console.log("photo=" + data.rDate[i].photo);
 						//						parseInt(pageSize * (page - 1) + i + 1)
-						console.log(urlpic + data.rDate[i].photo);
-						if(data.rDate[i].paramcode == 'AnnouncementPhoto'){
-							data.rDate[i].paramvalue = '-';
-						}
+						console.log(page1);
 						li = document.createElement('li');
 						li.id = data.rDate[i].id + "-fudd-" + data.rDate[i].photo;
 						li.className = 'mui-table-view-cell';
@@ -307,9 +368,6 @@
 
 						console.log("fbid=" + data.rDate[i].id);
 						console.log("photo=" + data.rDate[i].photo);
-						if(data.rDate[i].paramcode == 'AnnouncementPhoto'){
-							data.rDate[i].paramvalue = '-';
-						}
 						li = document.createElement('li');
 						li.id = data.rDate[i].id + "-fudd-" + data.rDate[i].photo;
 						li.className = 'mui-table-view-cell';

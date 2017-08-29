@@ -124,6 +124,9 @@
 			var page = 1;
 			mui.plusReady(function() {
 				plus.screen.lockOrientation("landscape-primary");
+//				plus.cache.clear( function () {
+//					alert( "Clear application cache successful!" );
+//				});
 			});
 			mui.init({
 				pullRefresh: {
@@ -148,70 +151,120 @@
 			 * 下拉刷新具体业务实现
 			 */
 			function pulldownRefresh() {
-				console.log("下拉刷新");
-				var qmodel = document.getElementById("qmodel").value;
-				var qgroup = document.getElementById("qgroup").value;
-				console.log(qmodel + '---' + qgroup);
+				if(checkNet()==false){
+					showHistory();
+				}else
+				{
+					console.log("下拉刷新");
+					var qmodel = document.getElementById("qmodel").value;
+					var qgroup = document.getElementById("qgroup").value;
+					console.log(qmodel + '---' + qgroup);
+					setTimeout(function() {
+						page = 1;
+						//http://114.115.212.225:8080/jeesite/a/BaseDataCheck/Announcement/AppAnList?ANGroup=&&ANModel=SVW71612CH&pageNo=1&&pageSize=5
+						var url = urlpath + '/a/ConfigurationSplit/ConfigurationSplit/APPlist?ANGroup=' + qgroup + '&ANModel=' + qmodel + '&pageNo=' + page + '&pageSize=' + pageSize;
+						console.log(url);
+						mui.getJSON(url, {}, function(data) {
+							console.log(JSON.stringify(data));
+							var ul = document.querySelector('.mui-table-view');
+							var len = ul.childElementCount;
+							console.log(len);
+							console.log(ul.childNodes.length);
+							//下拉刷新前清空子ul节点
+							for(var i = ul.childNodes.length - 1; i >= 2; i--) {
+								ul.removeChild(ul.childNodes[i]);
+							}
+							console.log(ul.childNodes.length);
+							if(data.rDate.length != '0') {
+								ul.appendChild(createFragment(ul, pageSize, data));
+							}
+							mui('#pullrefresh').pullRefresh().refresh(true);
+							mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+							page = 2;
+						});
+					}, 1500);
+			   }
+			}
+			
+			function showHistory() {
+				console.log("load history 1");
 				setTimeout(function() {
-					page = 1;
-					//http://114.115.212.225:8080/jeesite/a/BaseDataCheck/Announcement/AppAnList?ANGroup=&&ANModel=SVW71612CH&pageNo=1&&pageSize=5
-					var url = urlpath + '/a/ConfigurationSplit/ConfigurationSplit/APPlist?ANGroup=' + qgroup + '&ANModel=' + qmodel + '&pageNo=' + page + '&pageSize=' + pageSize;
-					console.log(url);
-					mui.getJSON(url, {}, function(data) {
-						console.log(JSON.stringify(data));
+					var data;
+		            var strData = localStorage.getItem("settingCach");
+		            if(strData==null)
+		            {
+		                data = {};
+		                data.rPageCount=0;
+		                data.rDate=[];
+		            }else{
+		                data = JSON.parse(strData);		                    				
+		            }
+
+						
 						var ul = document.querySelector('.mui-table-view');
 						var len = ul.childElementCount;
-						console.log(len);
-						console.log(ul.childNodes.length);
 						//下拉刷新前清空子ul节点
 						for(var i = ul.childNodes.length - 1; i >= 2; i--) {
 							ul.removeChild(ul.childNodes[i]);
 						}
-						console.log(ul.childNodes.length);
 						if(data.rDate.length != '0') {
-							ul.appendChild(createFragment(ul, pageSize, data));
+							ul.appendChild(createFragment2(ul, pageSize, data));
 						}
 						mui('#pullrefresh').pullRefresh().refresh(true);
-						mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
-						page = 2;
-					});
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh(false);
+
 				}, 1500);
 			}
 			/**
 			 * 上拉加载具体业务实现
 			 */
 			function pullupRefresh() {
-				var qmodel = document.getElementById("qmodel").value;
-				var qgroup = document.getElementById("qgroup").value;
-				setTimeout(function() {
-					var url = urlpath + '/a/ConfigurationSplit/ConfigurationSplit/APPlist?ANGroup=' + qgroup + '&ANModel=' + qmodel + '&pageNo=' + page + '&pageSize=' + pageSize;
-					//					var url = urlpath + '/a/BaseDataCheck/Announcement/AppAnList?pageNo=' + page + '&pageSize=' + pageSize;
-					console.log(url);
-					mui.getJSON(url, {}, function(data) {
-						var ul = document.querySelector('.mui-table-view');
-						var len = ul.childElementCount;
-						if(page <= data.rPageLast) {
-							ul.appendChild(createFragment(ul, pageSize, data));
-							if(page == data.rPageLast) {
+			    if(checkNet()==false){
+					showHistory();
+				}else
+				{
+					var qmodel = document.getElementById("qmodel").value;
+					var qgroup = document.getElementById("qgroup").value;
+					setTimeout(function() {
+						var url = urlpath + '/a/ConfigurationSplit/ConfigurationSplit/APPlist?ANGroup=' + qgroup + '&ANModel=' + qmodel + '&pageNo=' + page + '&pageSize=' + pageSize;
+						//					var url = urlpath + '/a/BaseDataCheck/Announcement/AppAnList?pageNo=' + page + '&pageSize=' + pageSize;
+						console.log(url);
+						mui.getJSON(url, {}, function(data) {
+							var ul = document.querySelector('.mui-table-view');
+							var len = ul.childElementCount;
+							if(page <= data.rPageLast) {
+								ul.appendChild(createFragment(ul, pageSize, data));
+								if(page == data.rPageLast) {
+									mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+								}
+							} else {
 								mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
 							}
-						} else {
-							mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
-						}
-						page++;
-					});
-					mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
-				}, 1500);
+							page++;
+						});
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+					}, 1500);
+				}
 			}
 
 			var createFragment = function(ul, count, data) {
 				var fragment = document.createDocumentFragment();
 				var li;
 				var jg, len;
-				len = data.rDate.length;
+				len = data.rDate.length
 				if(len < count) {
 					count = len;
 				}
+			    var tempData1;
+		        var strData1 = localStorage.getItem("settingCach");
+		        if(strData1==null)
+		        {
+		           tempData1 = {};
+		           tempData1.rPageCount=0;
+		           tempData1.rDate=[];
+		        }else{
+		            tempData1 = JSON.parse(strData1);		                    				
+		        }				
 				for(var i = 0; i < count; i++) {
 					li = document.createElement('li');
 					li.id = data.rDate[i].id + "-fudd-" + data.rDate[i].anid + "-fudd-" + data.rDate[i].editioncode;
@@ -230,6 +283,178 @@
 						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].coccode) + '</span>' +
 						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].encode) + '</span>' +
 						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].editioncode) + '</span>';
+					
+
+		             var isExist1 = false;
+		             for(ll=0;ll<tempData1.rDate.length;ll++)
+		             {
+		               if(tempData1.rDate[ll].id==data.rDate[i].id)
+		                  {
+		                     isExist1 = true;
+		                   }
+		             }
+					if(isExist1)
+					{
+		               li.style.background="lightblue";
+		               li.style.backgroundColor="lightblue";
+		               li.style.color = "red";
+					}					
+					li.addEventListener('tap', function() {
+						console.log("list id = " + this.getAttribute("id"));
+						var xzc_car = this.childNodes[5].innerHTML;
+						console.log(xzc_car);
+						mui.openWindow({
+							id: this.getAttribute("id"),
+							url: '../pagecode/pagecode-main.html',
+							styles: {
+								popGesture: 'close',
+							},
+							show: {
+								aniShow: 'slide-in-right'
+							},
+							waiting: {
+								autoShow: false
+							},
+							extras:{
+						        xzc_carType:xzc_car,
+						    }
+						});
+					});
+					li.addEventListener('swipeleft', function() {
+						var that = this;
+						var id = this.getAttribute("id");	
+						var btnArray = ['否', '是'];
+		                mui.confirm('是否确认同步此条数据？', '请确认', btnArray, function(e) {
+		                    if (e.index == 1) {
+		                    	var rid = id.split("-fudd-")[0];
+		                    	for(k=0;k<data.rDate.length;k++)
+		                    	{
+		                    		if(data.rDate[k].id==rid)
+		                    		{
+		                    			console.log("found in data");
+		                    			var tempData;
+		                    			var strData = localStorage.getItem("settingCach");
+		                    			if(strData==null)
+		                    			{
+		                    				console.log("cach is null");
+		                    				tempData = {};
+		                    				tempData.rPageCount=0;
+		                    				tempData.rDate=[];
+		                    			}else{
+		                    				console.log("cach is not null");
+		                    				tempData = JSON.parse(strData);		                    				
+		                    			}
+		                    			var isExist = false;
+		                    			for(l=0;l<tempData.rDate.length;l++)
+		                    			{
+		                    				if(tempData.rDate[l].id==rid)
+		                    				{
+		                    					isExist = true;
+		                    					console.log("exist same data");
+		                    					tempData.rDate[l] = data.rDate[k];
+		                    				}
+		                    			}
+		                    			if(isExist == false)
+		                    			{
+		                    				console.log("not exist same data");
+		                    				tempData.rDate.push(data.rDate[k]);
+		                    				tempData.rPageCount = tempData.rPageCount *1 +1;
+		                    			}		                    			
+		                    			localStorage.setItem("settingCach",JSON.stringify(tempData));
+										console.log(id);
+										rid = id.split("-fudd-");
+										var csid = rid[0];
+										var anid = rid[1];
+										var editioncode = rid[2];										
+										var listUrl = urlpath + '/a/configuration_rule/tcConfigurationRule/apppagecode?anid=' + anid + "&csid=" + csid;
+										console.log(listUrl);
+										mui.getJSON(listUrl, {}, function(data2) {
+											localStorage.setItem(id,JSON.stringify(data2));
+											mui.ajaxSettings.async = false;
+											//sub information
+											var len2 = data2.rDate.length;
+											for(var w = 0; w < len2; w++) {
+												var subid = data2.rDate[w] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
+											    console.log("----"+subid);
+											    var info = subid.split("-fudd-");
+												var pagecode1 = info[0];
+												var csid1 = info[1];
+												var anid1 = info[2];
+												var editioncode1 = info[3];
+												var url3 = urlpath + '/a/configuration_rule/tcConfigurationRule/appshow?pagecode=' + pagecode1 + '&anid=' + anid1 + '&csid=' + csid1 + '&editioncode=' + editioncode1 + '&pageNo=' + 1 + '&pageSize=' + 100000;
+												mui.getJSON(url3, {subid:subid}, function(data3) {
+													console.log("appshow"+subid);
+													console.log(JSON.stringify(data3));
+													localStorage.setItem("appshow"+subid,JSON.stringify(data3)); 
+						
+												});
+										
+											}
+											for(var w = 0; w < len2; w++) {
+												var subid = data2.rDate[w] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
+											    console.log("----"+subid);
+											    var info = subid.split("-fudd-");
+												var pagecode1 = info[0];
+												var csid1 = info[1];
+												var anid1 = info[2];
+												var editioncode1 = info[3];
+												var url4 = urlpath + '/a/configuration_rule/tcConfigurationRule/appshow2?pagecode=' + pagecode1 + '&anid=' + anid1 + '&csid=' + csid1 + '&editioncode=' + editioncode1 + '&pageNo=' + 1 + '&pageSize=' + 100000;
+												mui.getJSON(url4, {subid:subid}, function(data4) {
+													console.log("appshow2"+subid);
+													console.log(JSON.stringify(data4));
+													localStorage.setItem("appshow2"+subid,JSON.stringify(data4)); 
+												});												
+											}
+											mui.ajaxSettings.async = true;
+											//end sub
+											
+										 });
+				
+		                    		}
+		                    	}
+		                      that.style.background="lightblue";
+		                      that.style.backgroundColor="lightblue";
+		                      that.style.color = "red";
+		                      
+		                    } else {
+		                      
+		                    }
+		                });
+					});
+					fragment.appendChild(li);
+				}
+				return fragment;
+			};
+
+			var createFragment2 = function(ul, count, data) {
+				var fragment = document.createDocumentFragment();
+				var li;
+				var jg, len;
+				len = data.rDate.length
+				if(len < count) {
+					count = len;
+				}
+			
+				for(var i = 0; i < count; i++) {
+					li = document.createElement('li');
+					li.id = data.rDate[i].id + "-fudd-" + data.rDate[i].anid + "-fudd-" + data.rDate[i].editioncode;
+//					console.log(li.id);
+					li.className = 'mui-table-view-cell';
+					li.innerHTML =
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + parseInt(pageSize * (page - 1) + i + 1) + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].projectName) + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].productNo) + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].zwpp) + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].anname) + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].anmodel) + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].angroup) + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].issuedDate) + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].pagecodeid) + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].coccode) + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].encode) + '</span>' +
+						'<span style="float: left;text-align: center;" class="mui-col-sm-1 mui-ellipsis">' + jiaoyan(data.rDate[i].editioncode) + '</span>';
+					
+ 					
 					li.addEventListener('tap', function() {
 						console.log("list id = " + this.getAttribute("id"));
 						var xzc_car = this.childNodes[5].innerHTML;

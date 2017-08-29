@@ -7,16 +7,17 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.min.css" rel="stylesheet" />
 		<style>
-			#divnav a {
+			#divnav a{
 				position: relative;
 				top: -4px;
 			}
 		</style>
 	</head>
+	
 
 	<body>
-		<header class="mui-bar mui-bar-nav">
-			<a id="back" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="width: 20px;"></a>
+		<header class="mui-bar mui-bar-nav" >
+			<a id="back" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"  style="width: 20px;"></a>
 			<p id="xzc" style="position: absolute;"></p>
 			<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
 				<div id="divnav" class="mui-scroll" style="width: 100%;font-size: 16px;">
@@ -42,77 +43,139 @@
 				var csid = data[0];
 				var anid = data[1];
 				var editioncode = data[2];
+				if(checkNet()==false){
+					console.log("load history 2");
+					var self = plus.webview.currentWebview();
+					var xzc_carType = self.xzc_carType;
+					document.getElementById('xzc').innerHTML= '车辆型号：' + xzc_carType;
+                    var data;
+		            var strData = localStorage.getItem(wvid);
+		            if(strData==null)
+		            {
+		                data = {};
+		                data.rPageCount=0;
+		                data.rDate=[];
+		            }else{
+		                data = JSON.parse(strData);		                    				
+		            }
+						var len = data.rDate.length;
+						var diva = document.getElementById("divnav");
+						var w = parseInt(100 / len) - 3;
+						for(var i = 0; i < len; i++) {
+							var a = document.createElement('a');
+							if(i == 0) {
+								a.className = "mui-control-item mui-active mui-ellipsis";
+								firstwvid = data.rDate[i] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
+							} else {
+								a.className = "mui-control-item mui-ellipsis";
+							}
+							a.href = "#item" + (i + 1) + "mobile";
+							a.id = data.rDate[i] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
 
-				var listUrl = urlpath + '/a/configuration_rule/tcConfigurationRule/apppagecode?anid=' + anid + "&csid=" + csid;
-				console.log(listUrl);
-
-				var self = plus.webview.currentWebview();
-				var xzc_carType = self.xzc_carType;
-
-				mui.getJSON(listUrl, {}, function(data) {
-					console.log(JSON.stringify(data));
-					var len = data.rDate.length;
-					console.log(len);
-					console.log(data.rDate[0]);
-					var diva = document.getElementById("divnav");
-					var w = parseInt(100 / len) - 3;
-					for(var i = 0; i < len; i++) {
-						var a = document.createElement('a');
-						if(i == 0) {
-							a.className = "mui-control-item mui-active mui-ellipsis";
-							firstwvid = data.rDate[i] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
-						} else {
-							a.className = "mui-control-item mui-ellipsis";
-						}
-						a.href = "#item" + (i + 1) + "mobile";
-						a.id = data.rDate[i] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
-
-						console.log(a.id);
-						a.setAttribute("style", "width: " + w + "%;");
-						a.innerHTML = data.rDate[i];
-						a.addEventListener('tap', function() {
-							console.log("sub id = " + this.getAttribute("id"));
-							mui.openWindow({
-								id: this.getAttribute("id"),
-								url: 'pagecode-sub.html',
-								styles: {
-									top: '45px',
-									popGesture: 'close'
-								},
-								show: {
-									aniShow: 'slide-in-right'
-								},
-								waiting: {
-									autoShow: false
-								},
-								extras: {
-									xzc_ct: xzc_carType,
-								}
+							a.setAttribute("style", "width: " + w + "%;");
+							a.innerHTML = data.rDate[i];
+							a.addEventListener('tap', function() {
+								mui.openWindow({
+									id: this.getAttribute("id"),
+									url: 'pagecode-sub.html',
+									styles: {
+										top: '45px',
+										popGesture: 'close'
+									},
+									show: {
+										aniShow: 'slide-in-right'
+									},
+									waiting: {
+										autoShow: false
+									}
+								});
 							});
-						});
-						diva.appendChild(a);
-					}
-					console.log("sub id = " + firstwvid);
-					mui.openWindow({
-						id: firstwvid,
-						url: 'pagecode-sub.html',
-						styles: {
-							top: '45px',
-							popGesture: 'close'
-						},
-						show: {
-							aniShow: 'slide-in-right'
-						},
-						waiting: {
-							autoShow: false
-						},
-						extras: {
-							xzc_ct: xzc_carType,
+							diva.appendChild(a);
 						}
+						mui.openWindow({
+							id: firstwvid,
+							url: 'pagecode-sub.html',
+							styles: {
+								top: '45px',
+								popGesture: 'close'
+							},
+							show: {
+								aniShow: 'slide-in-right'
+							},
+							waiting: {
+								autoShow: false
+							}
+						});
+ 
+				}else
+				{
+					var listUrl = urlpath + '/a/configuration_rule/tcConfigurationRule/apppagecode?anid=' + anid + "&csid=" + csid;
+					console.log(listUrl);
+					
+					var self = plus.webview.currentWebview();
+					var xzc_carType = self.xzc_carType;
+					console.log(xzc_carType);
+					document.getElementById('xzc').innerHTML= '车辆型号：' + xzc_carType;
+					
+					mui.getJSON(listUrl, {}, function(data) {
+						console.log(JSON.stringify(data));
+						var len = data.rDate.length;
+						console.log(len);
+						console.log(data.rDate[0]);
+						var diva = document.getElementById("divnav");
+						var w = parseInt(100 / len) - 3;
+						for(var i = 0; i < len; i++) {
+							var a = document.createElement('a');
+							if(i == 0) {
+								a.className = "mui-control-item mui-active mui-ellipsis";
+								firstwvid = data.rDate[i] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
+							} else {
+								a.className = "mui-control-item mui-ellipsis";
+							}
+							a.href = "#item" + (i + 1) + "mobile";
+							a.id = data.rDate[i] + "-fudd-" + csid + "-fudd-" + anid + "-fudd-" + editioncode;
+							
+							console.log(a.id);
+							a.setAttribute("style", "width: " + w + "%;");
+							a.innerHTML = data.rDate[i];
+							a.addEventListener('tap', function() {
+								console.log("sub id = "+this.getAttribute("id"));
+								mui.openWindow({
+									id: this.getAttribute("id"),
+									url: 'pagecode-sub.html',
+									styles: {
+										top: '45px',
+										popGesture: 'close'
+									},
+									show: {
+										aniShow: 'slide-in-right'
+									},
+									waiting: {
+										autoShow: false
+									}
+								});
+							});
+							diva.appendChild(a);
+						}
+						console.log("sub id = "+firstwvid);
+						mui.openWindow({
+							id: firstwvid,
+							url: 'pagecode-sub.html',
+							styles: {
+								top: '45px',
+								popGesture: 'close'
+							},
+							show: {
+								aniShow: 'slide-in-right'
+							},
+							waiting: {
+								autoShow: false
+							}
+						});
 					});
-				});
+				
+				}
 			});
 		</script>
 	</body>
-
 </html>

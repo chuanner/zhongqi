@@ -338,60 +338,97 @@
 
 			// 上传文件
 			function upload() {
+				 if(checkNet()==false){
+					 saveLocal();
+				  }
+				  else
+				  {
 				//				console.log("开始上传：" + url);
+					var wt = plus.nativeUI.showWaiting();
+					var remark_raw = document.getElementById("remark").value
+					var remark = remark_raw;
+	//				var remark = toUnicode(remark_raw);
+					var uniflag = document.getElementById("sel").value;
+					var urlsave = urlpath + '/a/pagecode/tcPagecode/saveAjax?id=' + id + '&remark=' + remark + '&uniflag=' + uniflag;
+					console.log(urlsave);
+					mui.getJSON(urlsave, {}, function(data) {
+						console.log(JSON.stringify(data));
+						if('SUCCESS' == data) {
+							console.log("成功!!!");
+							mui.toast("修改备注和数据一致性成功");
+						}
+					});
+					var delimg = document.getElementById("delimg").value;
+					if(delimg == 0) { // 删除
+						// 删除 图片 delImg
+						var delimgurl = urlpath + '/a/pagecode/tcPagecode/delImg?id=' + id;
+						mui.getJSON(delimgurl, {}, function(data) {
+							console.log(JSON.stringify(data));
+							if('SUCCESS' == data) {
+								console.log("图片删除成功!!!");
+								mui.toast("图片删除成功");
+								wt.close();
+							}
+						});
+						mui.back();
+					} else { // 不删除  正常上传 
+						var url = urlpath + '/a/pagecode/tcPagecode/upload?id=' + id;
+						console.log(url);
+						var task = plus.uploader.createUpload(url, {
+								method: "POST"
+							},
+							function(t, status) { //上传完成
+								if(status == 200) {
+									console.log("上传成功：" + t.responseText);
+									wt.close();
+									mui.toast("图片上传成功!");
+								} else {
+									console.log("上传失败：" + status);
+									wt.close();
+									mui.toast("没有选择图片或图片上传失败!");
+								}
+								mui.back();
+							}
+						);
+						task.addFile(pic.realUrl, {
+							key: 'images1'
+						});
+						task.start();
+					}
+				}
+			}
+             function saveLocal() {
+				var cachObj = {};
+				cachObj.saved = false;				
 				var wt = plus.nativeUI.showWaiting();
 				var remark_raw = document.getElementById("remark").value
 				var remark = remark_raw;
-//				var remark = toUnicode(remark_raw);
 				var uniflag = document.getElementById("sel").value;
 				var urlsave = urlpath + '/a/pagecode/tcPagecode/saveAjax?id=' + id + '&remark=' + remark + '&uniflag=' + uniflag;
-				console.log(urlsave);
-				mui.getJSON(urlsave, {}, function(data) {
-					console.log(JSON.stringify(data));
-					if('SUCCESS' == data) {
-						console.log("成功!!!");
-						mui.toast("修改备注和数据一致性成功");
-					}
-				});
+				cachObj.urlsave = urlsave;
 				var delimg = document.getElementById("delimg").value;
+				cachObj.delimg = delimg;
 				if(delimg == 0) { // 删除
-					// 删除 图片 delImg
 					var delimgurl = urlpath + '/a/pagecode/tcPagecode/delImg?id=' + id;
-					mui.getJSON(delimgurl, {}, function(data) {
-						console.log(JSON.stringify(data));
-						if('SUCCESS' == data) {
-							console.log("图片删除成功!!!");
-							mui.toast("图片删除成功");
-							wt.close();
-						}
-					});
-					mui.back();
+					cachObj.delimgurl = delimgurl;
 				} else { // 不删除  正常上传 
 					var url = urlpath + '/a/pagecode/tcPagecode/upload?id=' + id;
-					console.log(url);
-					var task = plus.uploader.createUpload(url, {
-							method: "POST"
-						},
-						function(t, status) { //上传完成
-							if(status == 200) {
-								console.log("上传成功：" + t.responseText);
-								wt.close();
-								mui.toast("图片上传成功!");
-							} else {
-								console.log("上传失败：" + status);
-								wt.close();
-								mui.toast("没有选择图片或图片上传失败!");
-							}
-							mui.back();
-						}
-					);
-					task.addFile(pic.realUrl, {
-						key: 'images1'
-					});
-					task.start();
+					cachObj.uploadurl = url;
+					cachObj.realUrl = pic.realUrl;
 				}
+		       var tempData;
+		       var strData = localStorage.getItem("settingPicCach");
+		       if(strData==null)
+		         {
+		             tempData = [];
+		         }else{
+		           tempData = JSON.parse(strData);		                    				
+		       }				
+				tempData.push(cachObj);
+				wt.close();
+				mui.toast("离线保存成功!");
+				mui.back();
 			}
-
 			function toUnicode(s) {
 				return s.replace(/([\u4E00-\u9FA5]|[\uFE30-\uFFA0])/g, function(work) {
 					return "\\u" + work.charCodeAt(0).toString(16);

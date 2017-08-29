@@ -80,6 +80,8 @@
 			</div>
 
 			<div class="mui-button-row z_btn_1 hidden_btn">
+				<button onclick="syncDropDown()" type="button" class="mui-btn mui-btn-blue mui-btn-outlined">同步数据</button>
+				
 				<button onclick="clickCamera()" type="button" class="mui-btn mui-btn-blue mui-btn-outlined">拍照</button>
 
 				<button onclick="txsb()" type="button" class="mui-btn mui-btn-blue mui-btn-outlined">图像识别</button>
@@ -165,24 +167,37 @@
 
 			function plusReady() {
 				//进入页面刷出项目名称
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findProjnameList', {
-					type: 'post', //HTTP请求类型
-					success: function(data) {
-						var pCode_hb = plus.storage.getItem("pCode_hb");
-						if(pCode_hb == null) {
-							addOption(sel_pro_name, '请选择项目名称', data.projnameList);
-						} else {
-							addOption(sel_pro_name, '请选择项目名称', data.projnameList);
-							sel_pro_name.value = plus.storage.getItem("pName_hb");
-							xh_init();
+				if(checkNet()==false){
+					console.log("use cach");
+						var pCode_hgz = plus.storage.getItem("pCode_hgz");
+							if(pCode_hgz == null) {
+								addOption(sel_pro_name, '请选择项目名称', findProjnameList());
+							} else {
+								addOption(sel_pro_name, '请选择项目名称', findProjnameList());
+								sel_pro_name.value = plus.storage.getItem("pName_hgz");
+								xh_init();
+							}					
+				}
+				else
+				{
+					    mui.ajax(urlpath + '/a/dataCompare/bdHgz/findProjnameList', {
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							var pCode_hgz = plus.storage.getItem("pCode_hgz");
+							if(pCode_hgz == null) {
+								addOption(sel_pro_name, '请选择项目名称', data.projnameList);
+							} else {
+								addOption(sel_pro_name, '请选择项目名称', data.projnameList);
+								sel_pro_name.value = plus.storage.getItem("pName_hgz");
+								xh_init();
+							}
+	
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
 						}
-
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-					}
-				});
-
+					});
+				}
 				// 弹出系统选择按钮框  
 				mui("body").on("tap", ".imageup", function() {
 					page.imgUp();
@@ -218,18 +233,24 @@
 				if(this.value == '请选择项目名称') {
 					return;
 				}
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findXhByProjectname', {
-					data: {
-						projectname: sel_pro_name.value
-					},
-					type: 'post', //HTTP请求类型
-					success: function(data) {
-						addOption(sel_pro_xh, '请选择车辆型号', data.anmodelList);
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-					}
-				});
+				if(checkNet()==false){
+					addOption(sel_pro_xh, '请选择车辆型号', findXhByProjectname(sel_pro_name.value));
+				}
+				else
+				{
+					mui.ajax(urlpath + '/a/dataCompare/bdHgz/findXhByProjectname', {
+						data: {
+							projectname: sel_pro_name.value
+						},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							addOption(sel_pro_xh, '请选择车辆型号', data.anmodelList);
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+						}
+					});
+				}
 			}
 			//联动版本号
 			sel_pro_xh.onchange = function() {
@@ -238,19 +259,25 @@
 				if(this.value == '请选择车辆型号') {
 					return;
 				}
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findBbhByProjectAndXh', {
-					data: {
-						projectname: sel_pro_name.value,
-						anmodel: sel_pro_xh.value
-					},
-					type: 'post', //HTTP请求类型
-					success: function(data) {
-						addOption(sel_pro_ban, '请选择版本号', data.editioncodeList);
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-					}
-				});
+				if(checkNet()==false){
+					addOption(sel_pro_ban, '请选择版本号', findBbhByProjectAndXh(sel_pro_name.value,sel_pro_xh.value));
+				}
+				else
+				{
+					mui.ajax(urlpath + '/a/dataCompare/bdHgz/findBbhByProjectAndXh', {
+						data: {
+							projectname: sel_pro_name.value,
+							anmodel: sel_pro_xh.value
+						},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							addOption(sel_pro_ban, '请选择版本号', data.editioncodeList);
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+						}
+					});
+				}
 			}
 			//联动packagecode
 			sel_pro_ban.onchange = function() {
@@ -258,20 +285,26 @@
 				if(this.value == '请选择版本号') {
 					return;
 				}
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findPcodeByPxb', {
-					data: {
-						projectname: sel_pro_name.value,
-						anmodel: sel_pro_xh.value,
-						editioncode: sel_pro_ban.value
-					},
-					type: 'post', //HTTP请求类型
-					success: function(data) {
-						addOption(sel_pro_code, '请选择packagecode', data.packagecodeList);
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-					}
-				});
+				if(checkNet()==false){
+					addOption(sel_pro_code, '请选择packagecode', findPcodeByPxb(sel_pro_name.value,sel_pro_xh.value,sel_pro_ban.value));
+				}
+				else
+				{			
+					mui.ajax(urlpath + '/a/dataCompare/bdHgz/findPcodeByPxb', {
+						data: {
+							projectname: sel_pro_name.value,
+							anmodel: sel_pro_xh.value,
+							editioncode: sel_pro_ban.value
+						},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							addOption(sel_pro_code, '请选择packagecode', data.packagecodeList);
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+						}
+					});
+			    }
 			}
 			//选择完packagecode后刷出对应的数据
 			sel_pro_code.onchange = function() {
@@ -293,74 +326,89 @@
 				}
 			}
 
+			//缓存车辆型号
 			function xh_init() {
 				sel_pro_ban.innerHTML = "";
 				sel_pro_xh.innerHTML = "";
 				sel_pro_code.innerHTML = "";
-				console.log(sel_pro_name.value);
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findXhByProjectname', {
-					data: {
-						projectname: sel_pro_name.value
-					},
-					type: 'post', //HTTP请求类型
-					success: function(data) {
-						addOption(sel_pro_xh, '请选择车辆型号', data.anmodelList);
-						sel_pro_xh.value = plus.storage.getItem('xh_hb');
-						ban_init();
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-
-					}
-				});
-
+				if(checkNet()==false){
+					addOption(sel_pro_xh, '请选择车辆型号', findXhByProjectname(sel_pro_name.value));
+					sel_pro_xh.value = plus.storage.getItem('xh_hgz');
+					ban_init();
+				}
+				else
+				{
+					mui.ajax(urlpath + '/a/dataCompare/bdHgz/findXhByProjectname', {
+						data: {
+							projectname: sel_pro_name.value
+						},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							addOption(sel_pro_xh, '请选择车辆型号', data.anmodelList);
+							sel_pro_xh.value = plus.storage.getItem('xh_hgz');
+							ban_init();
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+						}
+					});
+				}
 			}
-
+			//缓存版本号
 			function ban_init() {
 				sel_pro_ban.innerHTML = "";
 				sel_pro_code.innerHTML = "";
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findBbhByProjectAndXh', {
-					data: {
-						projectname: sel_pro_name.value,
-						anmodel: sel_pro_xh.value
-					},
-					type: 'post', //HTTP请求类型
-					success: function(data) {
-
-						addOption(sel_pro_ban, '请选择版本号', data.editioncodeList);
-						sel_pro_ban.value = plus.storage.getItem('ban_hb');
-						pCode_init();
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-
-					}
-				});
-
+				if(checkNet()==false){
+				    addOption(sel_pro_ban, '请选择版本号', findBbhByProjectAndXh(sel_pro_name.value,sel_pro_xh.value));
+					sel_pro_ban.value = plus.storage.getItem('ban_hgz');
+					pCode_init();
+				}
+				else
+				{				
+					mui.ajax(urlpath + '/a/dataCompare/bdHgz/findBbhByProjectAndXh', {
+						data: {
+							projectname: sel_pro_name.value,
+							anmodel: sel_pro_xh.value
+						},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							addOption(sel_pro_ban, '请选择版本号', data.editioncodeList);
+							sel_pro_ban.value = plus.storage.getItem('ban_hgz');
+							pCode_init();
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+						}
+					});
+				}
 			}
-
+			//缓存packagecode
 			function pCode_init() {
 				sel_pro_code.innerHTML = "";
-				console.log(sel_pro_ban.value);
-				mui.ajax(urlpath + '/a/dataCompare/bdHgz/findPcodeByPxb', {
-					data: {
-						projectname: sel_pro_name.value,
-						anmodel: sel_pro_xh.value,
-						editioncode: sel_pro_ban.value
-					},
-					type: 'post', //HTTP请求类型
-					success: function(data) {
-
-						addOption(sel_pro_code, '请选择packagecode', data.packagecodeList);
-						sel_pro_code.value = plus.storage.getItem('pCode_hb');
-						data_init();
-					},
-					error: function(xhr, type, errorThrown) {
-						console.log(type);
-
-					}
-				});
-
+				if(checkNet()==false){
+					 addOption(sel_pro_code, '请选择packagecode', findPcodeByPxb(sel_pro_name.value,sel_pro_xh.value,sel_pro_ban.value));
+					 sel_pro_code.value = plus.storage.getItem('pCode_hgz');
+					 data_init();					
+				}
+				else
+				{
+					mui.ajax(urlpath + '/a/dataCompare/bdHgz/findPcodeByPxb', {
+						data: {
+							projectname: sel_pro_name.value,
+							anmodel: sel_pro_xh.value,
+							editioncode: sel_pro_ban.value
+						},
+						type: 'post', //HTTP请求类型
+						success: function(data) {
+							addOption(sel_pro_code, '请选择packagecode', data.packagecodeList);
+							sel_pro_code.value = plus.storage.getItem('pCode_hgz');
+							data_init();
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+						}
+					});
+				}
 			}
 
 			function data_init() {
